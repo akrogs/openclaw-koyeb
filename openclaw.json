@@ -1,15 +1,6 @@
 {
   "models": {
     "providers": {
-      "groq": {
-        "baseUrl": "https://api.groq.com/openai/v1",
-        "apiKey": "${GROQ_API_KEY}",
-        "api": "openai-completions",
-        "models": [
-          { "id": "openai/gpt-oss-120b", "name": "GPT-OSS 120B (Groq)", "contextWindow": 131072, "maxTokens": 32768 },
-          { "id": "qwen/qwen3-32b", "name": "Qwen3 32B (Groq)", "contextWindow": 131072, "maxTokens": 16384 }
-        ]
-      },
       "cerebras": {
         "baseUrl": "https://api.cerebras.ai/v1",
         "apiKey": "${CEREBRAS_API_KEY}",
@@ -43,10 +34,10 @@
       },
       {
         "id": "tecnico",
-        "name": "Tareas Tecnicas (Groq GPT-OSS 120B)",
+        "name": "Tareas Tecnicas (Cerebras)",
         "workspace": "~/.openclaw/workspaces/tecnico",
         "model": {
-          "primary": "groq/openai/gpt-oss-120b",
+          "primary": "cerebras/llama-3.3-70b",
           "fallbacks": ["cerebras/qwen-3-coder-480b"]
         },
         "thinkingDefault": "medium",
@@ -60,7 +51,7 @@
         "workspace": "~/.openclaw/workspaces/formato",
         "model": {
           "primary": "cerebras/llama-3.3-70b",
-          "fallbacks": ["groq/qwen/qwen3-32b"]
+          "fallbacks": ["cerebras/qwen-3-coder-480b"]
         },
         "thinkingDefault": "low",
         "tools": { "allow": ["read", "write"], "deny": ["exec", "browser"] },
