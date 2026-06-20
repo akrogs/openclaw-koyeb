@@ -16,11 +16,11 @@ services:
     container_name: openclaw
     restart: unless-stopped
     env_file: .env
-    # El puerto se publica SOLO en localhost (acceso via Cloudflare Tunnel o tunel SSH).
-    # Para exponerlo directo: cambia a "18789:18789" y abre el puerto en el firewall de la
-    # VM (ufw/iptables) Y en la security list de Oracle. El tunel no necesita esto.
+    # Por defecto el puerto se publica SOLO en localhost (acceso por tunel SSH/Cloudflare).
+    # Para acceso directo por IP publica: pon OPENCLAW_BIND=0.0.0.0 en .env y abre el puerto
+    # 18789 en el firewall (idealmente restringido a tu IP). Protegido por token + aprobacion.
     ports:
-      - "127.0.0.1:18789:18789"
+      - "${OPENCLAW_BIND:-127.0.0.1}:18789:18789"
     volumes:
       - openclaw-data:/home/node/.openclaw
     healthcheck:
