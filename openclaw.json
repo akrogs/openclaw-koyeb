@@ -4,6 +4,7 @@
     "bind": "lan",
     "port": 18789,
     "controlUi": {
+      "dangerouslyDisableDeviceAuth": true,
       "allowInsecureAuth": true,
       "allowedOrigins": [
         "http://localhost:18789",
@@ -11,11 +12,6 @@
         "http://35.253.104.10:18789",
         "https://instance-20260620-052154.tail507211.ts.net"
       ]
-    },
-    "nodes": {
-      "pairing": {
-        "autoApproveCidrs": ["0.0.0.0/0"]
-      }
     }
   },
   "models": {
