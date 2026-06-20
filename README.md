@@ -268,7 +268,7 @@ docker compose up -d --build
 docker compose logs openclaw | grep -i mcp      # el server 'composio' debe conectar y cargar tools
 ```
 
-> Config en `openclaw.json`: `mcpServers.composio` (`transport: streamable-http`, url fija, header
+> Config en `openclaw.json`: `mcp.servers.composio` (`transport: streamable-http`, url fija, header
 > `x-consumer-api-key: ${COMPOSIO_API_KEY}`). MCP **remoto** → no añade RAM (solo algún token extra por las
 > tools; por eso se limita a 3 toolkits). Pruébalo por Telegram: *"¿qué tengo en el calendario?"*.
 
