@@ -65,13 +65,17 @@ openclaw-koyeb/
 VM gratuita y *always-on* con volumen persistente. Resumen; detalle paso a paso en la respuesta del chat.
 
 1. **Crea la VM** en [cloud.oracle.com](https://cloud.oracle.com) → Compute → Instances → Create:
-   - Shape **Ampere A1 (ARM)** *Always Free* (p. ej. 1 OCPU / 6 GB). Imagen: **Ubuntu 22.04**.
-   - Guarda la **clave SSH**. (Si A1 no tiene capacidad, usa un **VM.Standard.E2.1.Micro** AMD x86, 1 GB.)
+   - Shape recomendado: **VM.Standard.E2.1.Micro** (AMD x86, 1 OCPU / 1 GB) *Always Free* — **casi siempre
+     disponible** y evita el lío de arquitectura ARM. Imagen: **Ubuntu 22.04**. Guarda la **clave SSH**.
+   - *(Alternativa con más RAM: shape **Ampere A1 (ARM)** Always Free — pero suele dar "Out of capacity" en
+     muchas regiones, Madrid incluida; tu home region es fija y no se cambia para el free tier.)*
 2. **Abre el acceso:** si vas a usar Cloudflare Tunnel, **no** abras puertos. Si quieres acceso directo,
    abre el 18789 en la *Security List* de la VCN **y** en el firewall de la VM (`ufw`/`iptables`).
-3. **Entra por SSH e instala Docker:**
+3. **Entra por SSH, crea swap (la Micro tiene solo 1 GB) e instala Docker:**
    ```sh
    ssh ubuntu@<IP>
+   sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
+   echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
    curl -fsSL https://get.docker.com | sudo sh
    sudo usermod -aG docker $USER && newgrp docker
    ```
@@ -99,9 +103,9 @@ VM gratuita y *always-on* con volumen persistente. Resumen; detalle paso a paso 
    dispositivo desde el contenedor: `docker compose exec openclaw openclaw devices approve` (o el comando
    que indique la UI).
 
-> ⚠️ **Arquitectura ARM:** `docker compose build` en A1 (ARM) requiere que la imagen base
-> `ghcr.io/openclaw/openclaw:2026.6.1` tenga variante **arm64**. Si el build falla por arquitectura, usa la
-> Micro AMD (x86) o una etiqueta arm64 si el proyecto la publica.
+> ⚠️ **Arquitectura:** con la **Micro AMD (x86)** no hay problema — la imagen base tiene amd64. Solo si usas
+> el shape **ARM A1** necesitas que `ghcr.io/openclaw/openclaw:2026.6.1` tenga variante **arm64**; si el
+> build falla por arquitectura, vuelve a la Micro AMD.
 
 ---
 
