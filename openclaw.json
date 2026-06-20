@@ -57,7 +57,7 @@
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
-        "tools": { "allow": ["read", "write", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "web_search", "web_fetch", "memory_get", "memory_search", "cron", "message", "create_goal", "get_goal", "update_goal"] },
+        "tools": { "allow": ["read", "write", "edit", "apply_patch", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "agents_list", "update_plan", "web_search", "web_fetch", "memory_get", "memory_search", "cron", "message", "create_goal", "get_goal", "update_goal"] },
         "subagents": { "allowAgents": ["tecnico", "formato"], "requireAgentId": false }
       },
       {
@@ -69,7 +69,7 @@
           "fallbacks": ["cerebras/zai-glm-4.7"]
         },
         "thinkingDefault": "medium",
-        "tools": { "profile": "coding", "allow": ["read", "write", "edit"], "deny": ["browser"] },
+        "tools": { "profile": "coding", "allow": ["read", "write", "edit", "web_search", "web_fetch"], "deny": ["browser"] },
         "sandbox": { "mode": "off" },
         "subagents": { "allowAgents": ["orquestador"] }
       },
