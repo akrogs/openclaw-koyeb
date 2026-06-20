@@ -21,10 +21,10 @@ Despliegue reproducible de [OpenClaw](https://docs.openclaw.ai) (Docker) con tre
 > agente tiene además un *fallback* en otro proveedor gratuito.
 
 > 🛠️ **Config activa (temporal):** el alta de **Groq** está fallando (error de signup en su web), así que
-> `openclaw.json` usa **solo Google + Cerebras** por ahora — `tecnico` corre en `cerebras/llama-3.3-70b`
-> (fallback `cerebras/qwen-3-coder-480b`). **Para reactivar Groq** cuando funcione: añade `GROQ_API_KEY` al
-> `.env`, vuelve a declarar el provider `groq` en `models.providers` y pon `tecnico.model.primary` a
-> `groq/openai/gpt-oss-120b` (todo está en el historial git / commit `151363f`).
+> `openclaw.json` usa **solo Google + Cerebras** por ahora — `tecnico` corre en `cerebras/gpt-oss-120b` y
+> `formato` en `cerebras/zai-glm-4.7` (IDs reales del catálogo de Cerebras). **Para reactivar Groq** cuando
+> funcione: añade `GROQ_API_KEY` al `.env`, vuelve a declarar el provider `groq` en `models.providers` y pon
+> `tecnico.model.primary` a `groq/openai/gpt-oss-120b` (todo está en el historial git / commit `151363f`).
 
 ```
         Web Control UI (Koyeb :18789)
