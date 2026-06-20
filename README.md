@@ -245,6 +245,37 @@ sin contenedor extra**. Config: `tools.web.search.provider: "duckduckgo"`.
   (provider `searxng` + servicio en el compose).
 - DuckDuckGo es un proveedor *experimental* (scrapea DDG): puede fallar ocasionalmente por páginas anti-bot.
 
+## Servicios externos: Calendario + Notion + Drive (vía Composio MCP)
+
+El agente accede a **Google Calendar**, **Notion** (proyectos/tareas) y **Google Drive** (15 GB) a través de
+**un único MCP remoto gestionado por [Composio](https://composio.dev)** — corre en su nube, así que **0
+RAM/CPU en la VM y sin `exec`**. El OAuth se hace en el panel de Composio (en tu navegador), no en el gateway.
+
+**Alta (en tu navegador, NO en la VM):**
+1. Crea cuenta free en **composio.dev**.
+2. Conecta **Google** (Calendar + Drive) y **Notion**; **habilita solo esos toolkits** (no los 500+, para no
+   inflar el contexto/tokens).
+3. Copia el **MCP endpoint URL** que te genera Composio.
+
+**En la VM (en este orden):**
+```sh
+cd ~/openclaw-koyeb
+nano .env        # COMPOSIO_MCP_URL=<la URL de Composio>   (ponla ANTES del rebuild)
+git pull
+docker compose up -d --build
+docker compose logs openclaw | grep -i mcp      # el server 'composio' debe conectar y cargar tools
+```
+
+> Config en `openclaw.json`: `mcpServers.composio` (`transport: streamable-http`, `url: ${COMPOSIO_MCP_URL}`).
+> El MCP es **remoto** → no añade RAM (solo algún token extra por las tools en contexto; por eso se limita a
+> 3 toolkits). Pruébalo por Telegram: *"¿qué tengo en el calendario?"*, *"crea una tarea en Notion: …"*.
+
+**A confirmar al montar** (formatos que varían por versión/proveedor):
+- Auth: la URL de Composio suele autoautenticar; si pide clave por cabecera, añade `headers.Authorization`
+  con `${COMPOSIO_API_KEY}` en el bloque `mcpServers` y la var en `.env`.
+- Si el orquestador **no ve** las tools del MCP, añádelas a su `tools.allow` (mira los nombres con
+  `docker compose exec openclaw openclaw mcp tools`).
+
 ## Caveats
 
 - **Los IDs de modelos cambian rápido — por eso existe el preflight.** Confirma en cada proveedor:
