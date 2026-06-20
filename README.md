@@ -58,11 +58,12 @@ openclaw-koyeb/
 ├── entrypoint.sh         # root: chown del volumen + siembra config → baja a "node"
 ├── node-start.sh         # node: avisa de claves + preflight + arranca gateway
 ├── preflight.mjs         # valida IDs contra Google/Groq/Cerebras (primario→error, fallback→aviso)
-├── openclaw.json         # config de los 3 agentes + models.providers (groq, cerebras)
+├── openclaw.json         # config de los 3 agentes + models.providers + web search + Telegram
 ├── workspaces/
 │   ├── orquestador/{SOUL.md,AGENTS.md}   # persona + política de delegación
 │   ├── tecnico/{SOUL.md,AGENTS.md}
 │   └── formato/{SOUL.md,AGENTS.md}
+├── searxng/settings.yml  # buscador web propio (SearXNG): JSON on, limiter off
 ├── .env.example
 └── README.md
 ```
@@ -233,6 +234,18 @@ detrás de Tailscale — no hay que abrir nada. Solo el dueño (tu ID) puede usa
 > Config: `channels.telegram` (allowlist) + `bindings` (telegram → `orquestador`) en `openclaw.json`; token e
 > ID van por `.env` (fuera del repo). Si el bot te ignora, confirma que `TELEGRAM_ALLOW_FROM` es tu ID
 > numérico exacto (míralo como `from.id` en el log).
+
+## Búsqueda web (SearXNG, gratis)
+
+El orquestador busca en internet con `web_search`/`web_fetch`, usando un **SearXNG self-hosted**
+(servicio `searxng` del compose) — **gratis, sin clave, sin límites y robusto** (no se bloquea como
+DuckDuckGo). Es una instancia **interna**: sin puerto al host, solo accesible por el gateway en
+`http://searxng:8080`.
+
+- Config OpenClaw: `tools.web.search.provider: "searxng"` + `plugins.entries.searxng.config.webSearch.baseUrl`.
+- `searxng/settings.yml` activa el formato **JSON** (necesario) y desactiva el **limiter** (evita autobloqueo interno).
+- No se usan Brave (ya no es gratis) ni el *grounding* de Gemini (puede facturar).
+- Levanta con el resto: `docker compose up -d --build` (SearXNG arranca como servicio aparte).
 
 ## Caveats
 

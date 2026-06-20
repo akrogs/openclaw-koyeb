@@ -29,6 +29,17 @@ services:
       timeout: 5s
       retries: 5
       start_period: 90s
+    depends_on:
+      - searxng
+
+  # Buscador web propio (SearXNG): instancia INTERNA, sin puerto al host. OpenClaw la usa por la
+  # red de compose (http://searxng:8080). JSON activado + limiter off en searxng/settings.yml.
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    volumes:
+      - ./searxng:/etc/searxng:rw
 
   # Opcional — tunel de Cloudflare para acceso remoto con HTTPS (gratis, sin abrir puertos).
   #   1) Crea un tunnel en https://one.dash.cloudflare.com (Networks > Tunnels), copia su token.

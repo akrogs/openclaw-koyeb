@@ -2,3 +2,7 @@
 *.log
 node_modules/
 .DS_Store
+
+# Archivos que SearXNG genera en runtime dentro de ./searxng (no versionar)
+searxng/uwsgi.ini
+searxng/limiter.toml
