@@ -3,9 +3,10 @@
 Despliegue reproducible de [OpenClaw](https://docs.openclaw.ai) (Docker) con tres agentes especializados,
 **cada uno en un proveedor gratuito distinto** para tener cuotas de rate limit independientes.
 
-> ⚠️ **Koyeb cerró su free tier para cuentas nuevas** (tras su adquisición por Mistral AI, feb-2026: empuja
-> al plan Pro). El despliegue **gratis** recomendado es ahora **Oracle Cloud Always Free** con
-> `docker-compose` (Opción A). La guía de Koyeb sigue abajo como Opción B (requiere plan de pago).
+> ⚠️ **Koyeb cerró su free tier para cuentas nuevas** (adquisición por Mistral AI, feb-2026). El despliegue
+> **gratis** recomendado es **Google Cloud e2-micro Always Free** con `docker-compose` (Opción A); Oracle
+> Always Free (Opción B) también vale pero su capacidad gratuita suele estar agotada por región. Koyeb
+> (Opción C) ya es de pago. Las tres usan el **mismo `docker-compose`** salvo el alta de la VM.
 
 ## Arquitectura de agentes
 
@@ -60,9 +61,50 @@ openclaw-koyeb/
 └── README.md
 ```
 
-## Opción A — Oracle Cloud Always Free (gratis, `docker-compose`)
+## Opción A — Google Cloud e2-micro Always Free (gratis, `docker-compose`)
 
-VM gratuita y *always-on* con volumen persistente. Resumen; detalle paso a paso en la respuesta del chat.
+VM *always-free* fiable (sin la lotería de capacidad de Oracle) y x86 (sin líos de arquitectura ARM).
+
+> ⚠️ **Para que sea $0**, respeta los límites del free tier: **1 `e2-micro`** en **us-west1 / us-central1 /
+> us-east1**, disco **Standard (pd-standard) ≤ 30 GB**, y ~1 GB de egress/mes. SSD/balanced o >30 GB se cobra.
+
+1. **Crea la VM** en [console.cloud.google.com](https://console.cloud.google.com) → Compute Engine → VM
+   instances → **Create**:
+   - **Region:** `us-central1` (Iowa). **Machine type:** serie **E2** → **`e2-micro`** (2 vCPU / 1 GB).
+   - **Boot disk:** **Ubuntu 22.04 LTS**, tipo **Standard persistent disk**, **30 GB**.
+   - Crea. (No hace falta abrir puertos si usas Cloudflare Tunnel o port-forward por SSH.)
+2. **Conéctate por SSH** (botón **SSH** del navegador, o `gcloud compute ssh <vm> --zone us-central1-a`).
+3. **Crea swap (1 GB de RAM) e instala Docker:**
+   ```sh
+   sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
+   echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+   curl -fsSL https://get.docker.com | sudo sh
+   sudo usermod -aG docker $USER && newgrp docker
+   ```
+4. **Clona el repo, configura secretos y arranca:**
+   ```sh
+   git clone https://github.com/akrogs/openclaw-koyeb.git && cd openclaw-koyeb
+   cp .env.example .env && nano .env     # GEMINI/GROQ/CEREBRAS + OPENCLAW_GATEWAY_TOKEN (openssl rand -hex 32)
+   docker compose up -d --build
+   docker compose logs -f openclaw       # verifica el preflight y el arranque
+   ```
+5. **Accede a la UI:**
+   - Sin abrir puertos (recomendado): port-forward por SSH desde tu Mac:
+     `gcloud compute ssh <vm> --zone us-central1-a -- -L 18789:127.0.0.1:18789` → abre `http://localhost:18789`.
+   - Permanente con HTTPS: **Cloudflare Tunnel** (perfil `tunnel` del compose).
+   - Directo: crea una *firewall rule* `tcp:18789` y pon `ports: ["18789:18789"]` en el compose.
+6. **Aprueba el dispositivo:** pega el `OPENCLAW_GATEWAY_TOKEN` en la UI → Connect, y aprueba desde el
+   contenedor (`docker compose exec openclaw openclaw devices approve`, o el comando que indique la UI).
+
+---
+
+## Opción B — Oracle Cloud Always Free (si hay capacidad)
+
+VM gratuita y *always-on* con volumen persistente. Misma idea que la Opción A (mismo `docker-compose`).
+
+> ⚠️ **Capacidad:** el free tier de Oracle suele dar **"Out of host capacity"** (ARM **y** AMD) en muchas
+> regiones, y la *home region* es fija. El truco habitual: **subir a Pay As You Go** da prioridad de
+> capacidad y los recursos *Always Free* siguen a **$0** mientras no superes los límites (requiere tarjeta).
 
 1. **Crea la VM** en [cloud.oracle.com](https://cloud.oracle.com) → Compute → Instances → Create:
    - Shape recomendado: **VM.Standard.E2.1.Micro** (AMD x86, 1 OCPU / 1 GB) *Always Free* — **casi siempre
@@ -109,7 +151,7 @@ VM gratuita y *always-on* con volumen persistente. Resumen; detalle paso a paso 
 
 ---
 
-## Opción B — Koyeb (de pago para cuentas nuevas)
+## Opción C — Koyeb (de pago para cuentas nuevas)
 
 1. **Sube este repo a GitHub.**
 2. **Genera el gateway token:** `openssl rand -hex 32`.
