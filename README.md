@@ -245,43 +245,40 @@ sin contenedor extra**. Config: `tools.web.search.provider: "duckduckgo"`.
   (provider `searxng` + servicio en el compose).
 - DuckDuckGo es un proveedor *experimental* (scrapea DDG): puede fallar ocasionalmente por páginas anti-bot.
 
-## Servicios externos: Calendario + Notion + Drive (vía Klavis MCP)
+## Servicios externos: Calendario + Notion + Drive (vía Klavis Strata, UN solo MCP)
 
-El agente accede a **Google Calendar**, **Notion** (proyectos/tareas) y **Google Drive** (15 GB) a través de
-**MCP remotos gestionados por [Klavis](https://klavis.ai)** — corren en su nube → **0 RAM/CPU en la VM y sin
-`exec`**. Klavis da una **URL estable por servicio que se auto-autentica** (lleva el `instanceId` dentro, sin
-cabeceras), ideal para un cliente MCP declarativo como OpenClaw. (Se eligió Klavis sobre Composio porque el
-Tool Router de Composio genera URLs por SDK/OAuth, que no encajan con la config estática de OpenClaw.)
+El agente accede a **Google Calendar**, **Notion** (proyectos/tareas) y **Google Drive** (15 GB) por **un
+único MCP remoto** ([Klavis **Strata**](https://klavis.ai)) — corre en su nube → **0 RAM/CPU en la VM y sin
+`exec`**. Strata agrega las 3 apps en **una sola URL estable** (determinista por `userId`), autenticada con
+**tu API key** (cabecera Bearer). (Se eligió Klavis sobre Composio porque el Tool Router de Composio genera
+URLs por SDK/OAuth, que no encajan con la config estática de OpenClaw.)
 
 **1. API key:** crea cuenta free en **klavis.ai** y copia tu **API key**.
 
-**2. Crea una instancia por servicio** (en tu Mac o la VM; un POST por cada uno). Cada respuesta trae
-`serverUrl` (estable, para OpenClaw) y `oauthUrl` (para autorizar la cuenta):
+**2. Crea la Strata (UN solo POST):** devuelve la `strataServerUrl` (una, estable) y los `oauthUrls`/`apiKeyUrls`
+para autorizar cada cuenta:
 ```sh
-for S in "Google Calendar" "Notion" "Google Drive"; do
-  curl -s -X POST https://api.klavis.ai/mcp-server/instance/create \
-    -H "Authorization: Bearer KLAVIS_API_KEY" -H "Content-Type: application/json" \
-    -d "{\"serverName\":\"$S\",\"userId\":\"akrogs\"}"; echo; done
+curl -s -X POST https://api.klavis.ai/mcp-server/strata/create \
+  -H "Authorization: Bearer KLAVIS_API_KEY" -H "Content-Type: application/json" \
+  -d '{"userId":"akrogs","servers":["Google Calendar","Notion","Google Drive"],"enableAuthHandling":true}'
 ```
 
-**3. Autoriza las cuentas:** abre en el navegador el `oauthUrl` de cada respuesta (Google, Notion) y
-concede acceso. (Esto es el OAuth, en tu navegador — no en la VM headless.)
+**3. Autoriza las cuentas:** abre en el navegador los `oauthUrls`/`apiKeyUrls` de la respuesta (Google,
+Notion) y concede acceso. (El OAuth se hace en tu navegador, no en la VM.)
 
-**4. Pon las `serverUrl` en `.env`** y arranca:
+**4. Pon la API key y la URL en `.env`** y arranca:
 ```sh
 cd ~/openclaw-koyeb
-nano .env        # KLAVIS_CALENDAR_URL=...  KLAVIS_NOTION_URL=...  KLAVIS_DRIVE_URL=...
+nano .env        # KLAVIS_API_KEY=...   KLAVIS_STRATA_URL=<strataServerUrl>
 git pull
 docker compose up -d --build
-docker compose logs openclaw | grep -i mcp      # los servers calendar/notion/drive deben conectar
+docker compose logs openclaw | grep -i -E "mcp|klavis"   # el server 'klavis' debe CONECTAR
 ```
 
-> Config en `openclaw.json`: `mcp.servers.{calendar,notion,drive}` (`transport: streamable-http`,
-> `url: ${KLAVIS_*_URL}`, **sin headers** — la URL se autoautentica). MCP **remoto** → no añade RAM. Las tools
-> MCP se inyectan a todos los agentes (no pasan por `tools.allow`). Pruébalo: *"¿qué tengo en el calendario?"*.
-
-> Empieza por **calendar** para validar (rellena solo `KLAVIS_CALENDAR_URL`, rebuild, mira el log); luego
-> añade notion y drive. Las URLs vacías solo no conectan (aviso), no rompen el arranque.
+> Config en `openclaw.json`: `mcp.servers.klavis` (`transport: streamable-http`, `url: ${KLAVIS_STRATA_URL}`,
+> header `Authorization: Bearer ${KLAVIS_API_KEY}`). **Un solo MCP** para las 3 apps. MCP **remoto** → no añade
+> RAM. Las tools MCP se inyectan a todos los agentes (no pasan por `tools.allow`). Pruébalo por Telegram:
+> *"¿qué tengo en el calendario?"*, *"crea una tarea en Notion: …"*.
 
 ## Caveats
 
