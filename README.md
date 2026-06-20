@@ -245,37 +245,43 @@ sin contenedor extra**. Config: `tools.web.search.provider: "duckduckgo"`.
   (provider `searxng` + servicio en el compose).
 - DuckDuckGo es un proveedor *experimental* (scrapea DDG): puede fallar ocasionalmente por páginas anti-bot.
 
-## Servicios externos: Calendario + Notion + Drive (vía Composio MCP)
+## Servicios externos: Calendario + Notion + Drive (vía Klavis MCP)
 
 El agente accede a **Google Calendar**, **Notion** (proyectos/tareas) y **Google Drive** (15 GB) a través de
-**un único MCP remoto gestionado por [Composio](https://composio.dev)** — corre en su nube, así que **0
-RAM/CPU en la VM y sin `exec`**. El OAuth se hace en el panel de Composio (en tu navegador), no en el gateway.
+**MCP remotos gestionados por [Klavis](https://klavis.ai)** — corren en su nube → **0 RAM/CPU en la VM y sin
+`exec`**. Klavis da una **URL estable por servicio que se auto-autentica** (lleva el `instanceId` dentro, sin
+cabeceras), ideal para un cliente MCP declarativo como OpenClaw. (Se eligió Klavis sobre Composio porque el
+Tool Router de Composio genera URLs por SDK/OAuth, que no encajan con la config estática de OpenClaw.)
 
-**Alta (en tu navegador, NO en la VM):**
-1. Crea cuenta free en **composio.dev** y copia tu **API key** (`dashboard.composio.dev`, empieza por `ck_`).
-2. **Conecta** las apps **Google** (Calendar + Drive) y **Notion** (autoriza las cuentas). Habilita solo esos
-   toolkits para no inflar el contexto/tokens.
+**1. API key:** crea cuenta free en **klavis.ai** y copia tu **API key**.
 
-> La **URL MCP es fija**: `https://connect.composio.dev/mcp` (ya en `openclaw.json`). La auth va por la
-> cabecera `x-consumer-api-key` con tu API key. No hay que buscar una URL per-usuario.
-
-**En la VM:**
+**2. Crea una instancia por servicio** (en tu Mac o la VM; un POST por cada uno). Cada respuesta trae
+`serverUrl` (estable, para OpenClaw) y `oauthUrl` (para autorizar la cuenta):
 ```sh
-cd ~/openclaw-koyeb
-nano .env        # COMPOSIO_API_KEY=ck_...
-git pull
-docker compose up -d --build
-docker compose logs openclaw | grep -i mcp      # el server 'composio' debe conectar y cargar tools
+for S in "Google Calendar" "Notion" "Google Drive"; do
+  curl -s -X POST https://api.klavis.ai/mcp-server/instance/create \
+    -H "Authorization: Bearer KLAVIS_API_KEY" -H "Content-Type: application/json" \
+    -d "{\"serverName\":\"$S\",\"userId\":\"akrogs\"}"; echo; done
 ```
 
-> Config en `openclaw.json`: `mcp.servers.composio` (`transport: streamable-http`, url fija, header
-> `x-consumer-api-key: ${COMPOSIO_API_KEY}`). MCP **remoto** → no añade RAM (solo algún token extra por las
-> tools; por eso se limita a 3 toolkits). Pruébalo por Telegram: *"¿qué tengo en el calendario?"*.
+**3. Autoriza las cuentas:** abre en el navegador el `oauthUrl` de cada respuesta (Google, Notion) y
+concede acceso. (Esto es el OAuth, en tu navegador — no en la VM headless.)
 
-**A confirmar al montar** (varían por versión):
-- Si da 401, prueba el header `X-API-Key` en vez de `x-consumer-api-key`.
-- Si el orquestador **no ve** las tools del MCP, añádelas a su `tools.allow` (nombres con
-  `docker compose exec openclaw openclaw mcp tools`).
+**4. Pon las `serverUrl` en `.env`** y arranca:
+```sh
+cd ~/openclaw-koyeb
+nano .env        # KLAVIS_CALENDAR_URL=...  KLAVIS_NOTION_URL=...  KLAVIS_DRIVE_URL=...
+git pull
+docker compose up -d --build
+docker compose logs openclaw | grep -i mcp      # los servers calendar/notion/drive deben conectar
+```
+
+> Config en `openclaw.json`: `mcp.servers.{calendar,notion,drive}` (`transport: streamable-http`,
+> `url: ${KLAVIS_*_URL}`, **sin headers** — la URL se autoautentica). MCP **remoto** → no añade RAM. Las tools
+> MCP se inyectan a todos los agentes (no pasan por `tools.allow`). Pruébalo: *"¿qué tengo en el calendario?"*.
+
+> Empieza por **calendar** para validar (rellena solo `KLAVIS_CALENDAR_URL`, rebuild, mira el log); luego
+> añade notion y drive. Las URLs vacías solo no conectan (aviso), no rompen el arranque.
 
 ## Caveats
 

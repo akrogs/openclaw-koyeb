@@ -107,11 +107,9 @@
   ],
   "mcp": {
     "servers": {
-      "composio": {
-        "transport": "streamable-http",
-        "url": "https://connect.composio.dev/mcp",
-        "headers": { "x-consumer-api-key": "${COMPOSIO_API_KEY}" }
-      }
+      "calendar": { "transport": "streamable-http", "url": "${KLAVIS_CALENDAR_URL}" },
+      "notion":   { "transport": "streamable-http", "url": "${KLAVIS_NOTION_URL}" },
+      "drive":    { "transport": "streamable-http", "url": "${KLAVIS_DRIVE_URL}" }
     }
   }
 }
