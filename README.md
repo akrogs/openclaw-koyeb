@@ -46,7 +46,7 @@ openclaw-koyeb/
 ├── Dockerfile            # imagen fijada (2026.6.1) + hornea config/instrucciones/scripts
 ├── entrypoint.sh         # root: chown del volumen + siembra config → baja a "node"
 ├── node-start.sh         # node: avisa de claves + preflight + arranca gateway
-├── preflight.mjs         # valida los IDs de modelos contra Google/Groq/Cerebras
+├── preflight.mjs         # valida IDs contra Google/Groq/Cerebras (primario→error, fallback→aviso)
 ├── openclaw.json         # config de los 3 agentes + models.providers (groq, cerebras)
 ├── workspaces/
 │   ├── orquestador/{SOUL.md,AGENTS.md}   # persona + política de delegación
@@ -109,7 +109,8 @@ Sin claves, el preflight avisa y omite cada proveedor (no falla).
 - **Los IDs de modelos cambian rápido — por eso existe el preflight.** Confirma en cada proveedor:
   - **Groq deprecó `llama-3.3-70b-versatile` y `llama-3.1-8b-instant` el 17-jun-2026** → usamos
     `openai/gpt-oss-120b` / `qwen/qwen3-32b` en Groq, y Llama 3.3 70B desde **Cerebras** (estable allí).
-  - **Cerebras `qwen-3-coder-480b` es "evaluation"** (puede retirarse) → va como *fallback*; el preflight avisa.
+  - **Cerebras `qwen-3-coder-480b` es "evaluation"** (puede retirarse) → va como *fallback*; si desaparece
+    el preflight **solo avisa** (no bloquea el arranque). Si falta un modelo **primario**, sí aborta.
   - **Gemini Pro NO es generoso en free** (~50 req/día) → el orquestador usa **Flash**, no Pro.
 - **Rate limits independientes pero finitos:** mantén fallbacks, `maxPingPongTurns` y la regla "una
   llamada por subagente" del `AGENTS.md` del orquestador.
