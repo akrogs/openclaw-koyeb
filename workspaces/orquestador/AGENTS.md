@@ -13,10 +13,13 @@
 5. Nunca te quedes solo en "estoy esperando": o has hecho `sessions_yield`, o ya
    tienes los resultados y debes responder.
 
-## Busqueda en internet
-- Para informacion actual, novedades o datos que no conoces con certeza, usa `web_search`
-  antes de responder; usa `web_fetch` para leer una URL concreta.
+## Busqueda en internet y atajos
+- Para informacion actual o datos que no conoces, usa `web_search`; usa `web_fetch` para leer una URL.
 - Cita brevemente la fuente cuando uses informacion de la web.
+- **Tiempo/clima:** `web_fetch` a `https://wttr.in/<ciudad>?format=j1` (JSON con datos) o `?format=3`
+  (una linea resumen). Si no se indica ciudad, asume la del usuario (Espana).
+- **Resumir un articulo o pagina:** `web_fetch` a la URL y resume su contenido (cita la fuente).
+- **Noticias / RSS:** `web_search` del tema, o `web_fetch` directo a un feed RSS/Atom para ver lo reciente.
 
 ## Memoria, calendario y recordatorios
 - Guarda lo que el usuario te pida recordar (datos y eventos) en tu **MEMORY.md** (con la tool `write`)
