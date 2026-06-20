@@ -1,16 +1,54 @@
 #!/bin/sh
 set -e
 
-# Directorio de configuracion de OpenClaw (montado como volumen persistente en Koyeb).
+# Directorio de configuracion de OpenClaw (volumen persistente en Koyeb).
 CONFIG_DIR="/home/node/.openclaw"
-mkdir -p "$CONFIG_DIR/workspace"
+APP_USER="node"
+TPL="/opt/openclaw"
+export HOME="/home/node"
 
-# La configuracion de agentes es declarativa: se siembra/actualiza desde la plantilla
-# del repo en cada arranque. Esto SOLO reescribe openclaw.json; los perfiles de auth y
-# las aprobaciones de dispositivo (en $CONFIG_DIR/agents/...) se conservan intactos.
-cp /opt/openclaw/openclaw.json "$CONFIG_DIR/openclaw.json"
+# Siembra las instrucciones por agente (SOUL.md/AGENTS.md) SOLO si no existen ya,
+# para no pisar la memoria que el agente escriba en runtime.
+seed_workspaces() {
+  for d in "$TPL"/workspaces/*/; do
+    [ -d "$d" ] || continue
+    id="$(basename "$d")"
+    dest="$CONFIG_DIR/workspaces/$id"
+    mkdir -p "$dest"
+    for f in "$d"*; do
+      [ -f "$f" ] || continue
+      name="$(basename "$f")"
+      [ -f "$dest/$name" ] || cp "$f" "$dest/$name"
+    done
+  done
+}
 
-# Arranca el gateway. NOTA: confirmar el comando real de la imagen oficial con
-#   docker inspect ghcr.io/openclaw/openclaw:latest
-# por si el CMD difiere de "openclaw gateway".
-exec openclaw gateway
+# openclaw.json es declarativo (fuente de verdad = repo): se sobrescribe siempre.
+seed_config() {
+  mkdir -p "$CONFIG_DIR/workspaces"
+  cp "$TPL/openclaw.json" "$CONFIG_DIR/openclaw.json"
+  seed_workspaces
+}
+
+if [ "$(id -u)" = "0" ]; then
+  # Fase root: asegurar propiedad del volumen montado y sembrar config/instrucciones.
+  mkdir -p "$CONFIG_DIR/workspace"
+  seed_config
+  chown -R "$APP_USER":"$APP_USER" "$CONFIG_DIR" 2>/dev/null || true
+
+  # Bajar a "node" para arrancar el gateway (cadena de fallback segun lo disponible).
+  if command -v gosu >/dev/null 2>&1; then
+    exec gosu "$APP_USER" "$TPL/node-start.sh"
+  elif command -v su-exec >/dev/null 2>&1; then
+    exec su-exec "$APP_USER" "$TPL/node-start.sh"
+  elif command -v su >/dev/null 2>&1; then
+    exec su -s /bin/sh "$APP_USER" -c "$TPL/node-start.sh"
+  else
+    echo "[entrypoint] aviso: no se pudo cambiar a '$APP_USER'; ejecutando como root." >&2
+    exec "$TPL/node-start.sh"
+  fi
+else
+  # Ya somos usuario sin privilegios: sembrar lo posible y arrancar.
+  seed_config
+  exec "$TPL/node-start.sh"
+fi

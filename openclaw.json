@@ -1,10 +1,12 @@
 {
-  "env": {
-    "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
+  "auth": {
+    "profiles": {
+      "openrouter:default": { "provider": "openrouter", "mode": "api_key" }
+    }
   },
   "agents": {
     "defaults": {
-      "workspace": "~/.openclaw/workspace",
+      "workspace": "~/.openclaw/workspaces/shared",
       "thinkingDefault": "low"
     },
     "list": [
@@ -12,6 +14,7 @@
         "id": "orquestador",
         "default": true,
         "name": "Orquestador (Nemotron 3 Ultra)",
+        "workspace": "~/.openclaw/workspaces/orquestador",
         "model": {
           "primary": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
           "fallbacks": ["openrouter/nvidia/nemotron-3-super-120b-a12b:free"]
@@ -23,10 +26,11 @@
       },
       {
         "id": "tecnico",
-        "name": "Tareas Tecnicas (Qwen 2.5 72B)",
+        "name": "Tareas Tecnicas (Qwen3 Coder)",
+        "workspace": "~/.openclaw/workspaces/tecnico",
         "model": {
-          "primary": "openrouter/qwen/qwen-2.5-72b-instruct:free",
-          "fallbacks": ["openrouter/meta-llama/llama-3.3-70b-instruct:free"]
+          "primary": "openrouter/qwen/qwen3-coder:free",
+          "fallbacks": ["openrouter/qwen/qwen3-next-80b-a3b-instruct:free"]
         },
         "thinkingDefault": "medium",
         "tools": { "profile": "coding", "allow": ["read", "write", "edit"], "deny": ["browser"] },
@@ -36,9 +40,10 @@
       {
         "id": "formato",
         "name": "Formateo y Resumen (Llama 3.3 70B)",
+        "workspace": "~/.openclaw/workspaces/formato",
         "model": {
           "primary": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
-          "fallbacks": ["openrouter/qwen/qwen-2.5-72b-instruct:free"]
+          "fallbacks": ["openrouter/qwen/qwen3-next-80b-a3b-instruct:free"]
         },
         "thinkingDefault": "low",
         "tools": { "allow": ["read", "write"], "deny": ["exec", "browser"] },

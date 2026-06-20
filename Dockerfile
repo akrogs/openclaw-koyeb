@@ -1,16 +1,23 @@
-FROM ghcr.io/openclaw/openclaw:latest
+# Imagen fijada a una version estable conocida.
+# Evita ":latest": hay builds publicadas inestables (p.ej. 2026.3.2, 2026.2.26).
+# Verifica/actualiza la etiqueta en:
+#   https://github.com/openclaw/openclaw/pkgs/container/openclaw
+FROM ghcr.io/openclaw/openclaw:2026.6.1
 
-# Plantilla de configuracion declarativa de los 3 agentes.
-# Se copia al directorio de config (volumen persistente) en el arranque via entrypoint,
-# para no chocar con el montaje del volumen en /home/node/.openclaw.
+# Plantillas (se siembran en el volumen en el arranque via entrypoint):
+#  - openclaw.json : config declarativa de los 3 agentes
+#  - workspaces/   : SOUL.md + AGENTS.md (rol e instrucciones por agente)
+#  - scripts de arranque y preflight
 COPY openclaw.json /opt/openclaw/openclaw.json
+COPY workspaces/ /opt/openclaw/workspaces/
 COPY entrypoint.sh /opt/openclaw/entrypoint.sh
+COPY node-start.sh /opt/openclaw/node-start.sh
+COPY preflight.mjs /opt/openclaw/preflight.mjs
 
 USER root
-RUN chmod +x /opt/openclaw/entrypoint.sh
-USER node
+RUN chmod +x /opt/openclaw/entrypoint.sh /opt/openclaw/node-start.sh
 
-# Puerto del Gateway Control UI / API.
+# El entrypoint corre como root para poder ajustar la propiedad del volumen
+# montado por Koyeb (suele venir root-owned); luego baja a "node" para el gateway.
 EXPOSE 18789
-
 ENTRYPOINT ["/opt/openclaw/entrypoint.sh"]
