@@ -16,6 +16,8 @@ services:
     container_name: openclaw
     restart: unless-stopped
     env_file: .env
+    environment:
+      - TZ=Europe/Madrid        # el agente da la hora/fecha en hora local de España
     # Por defecto el puerto se publica SOLO en localhost (acceso por tunel SSH/Cloudflare).
     # Para acceso directo por IP publica: pon OPENCLAW_BIND=0.0.0.0 en .env y abre el puerto
     # 18789 en el firewall (idealmente restringido a tu IP). Protegido por token + aprobacion.

@@ -7,8 +7,9 @@ APP_USER="node"
 TPL="/opt/openclaw"
 export HOME="/home/node"
 
-# Siembra las instrucciones por agente (SOUL.md/AGENTS.md) SOLO si no existen ya,
-# para no pisar la memoria que el agente escriba en runtime.
+# Siembra las instrucciones por agente (SOUL.md/AGENTS.md). Estos archivos son DECLARATIVOS
+# (fuente de verdad = repo), asi que se SOBRESCRIBEN siempre para que los cambios lleguen a la VM.
+# La memoria que el agente aprende vive en MEMORY.md/USER.md (NO estan en el repo, no se tocan aqui).
 seed_workspaces() {
   for d in "$TPL"/workspaces/*/; do
     [ -d "$d" ] || continue
@@ -17,8 +18,7 @@ seed_workspaces() {
     mkdir -p "$dest"
     for f in "$d"*; do
       [ -f "$f" ] || continue
-      name="$(basename "$f")"
-      [ -f "$dest/$name" ] || cp "$f" "$dest/$name"
+      cp "$f" "$dest/$(basename "$f")"
     done
   done
 }
