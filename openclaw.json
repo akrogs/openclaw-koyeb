@@ -1,0 +1,52 @@
+{
+  "env": {
+    "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "~/.openclaw/workspace",
+      "thinkingDefault": "low"
+    },
+    "list": [
+      {
+        "id": "orquestador",
+        "default": true,
+        "name": "Orquestador (Nemotron 3 Ultra)",
+        "model": {
+          "primary": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+          "fallbacks": ["openrouter/nvidia/nemotron-3-super-120b-a12b:free"]
+        },
+        "thinkingDefault": "high",
+        "contextLimits": { "memoryGetMaxChars": 24000 },
+        "tools": { "allow": ["read", "write", "sessions_spawn"] },
+        "subagents": { "allowAgents": ["tecnico", "formato"], "requireAgentId": false }
+      },
+      {
+        "id": "tecnico",
+        "name": "Tareas Tecnicas (Qwen 2.5 72B)",
+        "model": {
+          "primary": "openrouter/qwen/qwen-2.5-72b-instruct:free",
+          "fallbacks": ["openrouter/meta-llama/llama-3.3-70b-instruct:free"]
+        },
+        "thinkingDefault": "medium",
+        "tools": { "profile": "coding", "allow": ["read", "write", "edit"], "deny": ["browser"] },
+        "sandbox": { "mode": "off" },
+        "subagents": { "allowAgents": ["orquestador"] }
+      },
+      {
+        "id": "formato",
+        "name": "Formateo y Resumen (Llama 3.3 70B)",
+        "model": {
+          "primary": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
+          "fallbacks": ["openrouter/qwen/qwen-2.5-72b-instruct:free"]
+        },
+        "thinkingDefault": "low",
+        "tools": { "allow": ["read", "write"], "deny": ["exec", "browser"] },
+        "subagents": { "allowAgents": ["orquestador"] }
+      }
+    ]
+  },
+  "session": {
+    "agentToAgent": { "maxPingPongTurns": 8 }
+  }
+}
