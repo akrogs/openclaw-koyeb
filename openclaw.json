@@ -16,14 +16,11 @@
   },
   "tools": {
     "web": {
-      "search": { "provider": "searxng" }
+      "search": { "provider": "duckduckgo" }
     }
   },
   "plugins": {
     "entries": {
-      "searxng": {
-        "config": { "webSearch": { "baseUrl": "http://searxng:8080" } }
-      },
       "browser": { "enabled": false },
       "canvas": { "enabled": false },
       "talk-voice": { "enabled": false },

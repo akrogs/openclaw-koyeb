@@ -63,7 +63,6 @@ openclaw-koyeb/
 │   ├── orquestador/{SOUL.md,AGENTS.md}   # persona + política de delegación
 │   ├── tecnico/{SOUL.md,AGENTS.md}
 │   └── formato/{SOUL.md,AGENTS.md}
-├── searxng/settings.yml  # buscador web propio (SearXNG): JSON on, limiter off
 ├── .env.example
 └── README.md
 ```
@@ -235,17 +234,16 @@ detrás de Tailscale — no hay que abrir nada. Solo el dueño (tu ID) puede usa
 > ID van por `.env` (fuera del repo). Si el bot te ignora, confirma que `TELEGRAM_ALLOW_FROM` es tu ID
 > numérico exacto (míralo como `from.id` en el log).
 
-## Búsqueda web (SearXNG, gratis)
+## Búsqueda web (DuckDuckGo, gratis)
 
-El orquestador busca en internet con `web_search`/`web_fetch`, usando un **SearXNG self-hosted**
-(servicio `searxng` del compose) — **gratis, sin clave, sin límites y robusto** (no se bloquea como
-DuckDuckGo). Es una instancia **interna**: sin puerto al host, solo accesible por el gateway en
-`http://searxng:8080`.
+El orquestador busca en internet con `web_search`/`web_fetch` usando **DuckDuckGo** — **gratis, sin clave,
+sin contenedor extra**. Config: `tools.web.search.provider: "duckduckgo"`.
 
-- Config OpenClaw: `tools.web.search.provider: "searxng"` + `plugins.entries.searxng.config.webSearch.baseUrl`.
-- `searxng/settings.yml` activa el formato **JSON** (necesario) y desactiva el **limiter** (evita autobloqueo interno).
 - No se usan Brave (ya no es gratis) ni el *grounding* de Gemini (puede facturar).
-- Levanta con el resto: `docker compose up -d --build` (SearXNG arranca como servicio aparte).
+- **Por qué DuckDuckGo y no SearXNG:** SearXNG self-hosted es más robusto, pero no cabe junto a OpenClaw en
+  la **e2-micro de 1 GB** (saturaba la RAM). Si subes a una VM con ≥2 GB, se puede volver a SearXNG
+  (provider `searxng` + servicio en el compose).
+- DuckDuckGo es un proveedor *experimental* (scrapea DDG): puede fallar ocasionalmente por páginas anti-bot.
 
 ## Caveats
 
