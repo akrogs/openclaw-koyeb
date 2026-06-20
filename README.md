@@ -277,7 +277,8 @@ docker compose logs openclaw | grep -i -E "mcp|klavis"   # el server 'klavis' de
 
 > Config en `openclaw.json`: `mcp.servers.klavis` (`transport: streamable-http`, `url: ${KLAVIS_STRATA_URL}`,
 > header `Authorization: Bearer ${KLAVIS_API_KEY}`). **Un solo MCP** para las 3 apps. MCP **remoto** → no añade
-> RAM. Las tools MCP se inyectan a todos los agentes (no pasan por `tools.allow`). Pruébalo por Telegram:
+> RAM. **Ojo:** en 2026.6.1 las tools MCP SÍ pasan por el `tools.allow` del agente → el orquestador las
+> permite con `"klavis__*"` (los 6 meta-tools de Strata: discover/execute/...). Pruébalo por Telegram:
 > *"¿qué tengo en el calendario?"*, *"crea una tarea en Notion: …"*.
 
 ## Caveats
