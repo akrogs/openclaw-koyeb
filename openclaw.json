@@ -14,6 +14,11 @@
       ]
     }
   },
+  "tools": {
+    "web": {
+      "search": { "provider": "duckduckgo" }
+    }
+  },
   "models": {
     "providers": {
       "cerebras": {
@@ -44,7 +49,7 @@
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
-        "tools": { "allow": ["read", "write", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents"] },
+        "tools": { "allow": ["read", "write", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "web_search", "web_fetch"] },
         "subagents": { "allowAgents": ["tecnico", "formato"], "requireAgentId": false }
       },
       {

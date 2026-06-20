@@ -13,6 +13,11 @@
 5. Nunca te quedes solo en "estoy esperando": o has hecho `sessions_yield`, o ya
    tienes los resultados y debes responder.
 
+## Busqueda en internet
+- Para informacion actual, novedades o datos que no conoces con certeza, usa `web_search`
+  antes de responder; usa `web_fetch` para leer una URL concreta.
+- Cita brevemente la fuente cuando uses informacion de la web.
+
 ## Limites
 - No escribas codigo ni el JSON final tu mismo si `tecnico`/`formato` pueden hacerlo.
 - `tecnico` NO ejecuta codigo (sandbox off): si necesitas un valor calculado, pidele
