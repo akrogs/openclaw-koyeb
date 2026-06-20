@@ -1,0 +1,51 @@
+# OpenClaw 24/7 en una VM (Oracle Cloud Always Free u otra).
+# Construye la imagen desde el Dockerfile del repo (hornea openclaw.json, los workspaces
+# y los scripts), con volumen persistente y reinicio automatico.
+#
+# Uso en la VM:
+#   cp .env.example .env          # y rellena las 4 claves
+#   docker compose up -d --build
+#   docker compose logs -f openclaw   # ver el preflight y el arranque
+#
+# Acceso remoto con HTTPS gratis: ver el servicio 'cloudflared' (perfil "tunnel").
+
+services:
+  openclaw:
+    build: .
+    image: openclaw-koyeb:local
+    container_name: openclaw
+    restart: unless-stopped
+    env_file: .env
+    # El puerto se publica SOLO en localhost (acceso via Cloudflare Tunnel o tunel SSH).
+    # Para exponerlo directo: cambia a "18789:18789" y abre el puerto en el firewall de la
+    # VM (ufw/iptables) Y en la security list de Oracle. El tunel no necesita esto.
+    ports:
+      - "127.0.0.1:18789:18789"
+    volumes:
+      - openclaw-data:/home/node/.openclaw
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18789/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  # Opcional — tunel de Cloudflare para acceso remoto con HTTPS (gratis, sin abrir puertos).
+  #   1) Crea un tunnel en https://one.dash.cloudflare.com (Networks > Tunnels), copia su token.
+  #   2) Ponlo en .env como CLOUDFLARE_TUNNEL_TOKEN=...
+  #   3) En el dashboard del tunnel, enruta tu hostname publico -> http://openclaw:18789
+  #   4) Arranca con:  docker compose --profile tunnel up -d
+  # (cloudflared alcanza a 'openclaw:18789' por la red interna de compose, sin puerto en el host.)
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: openclaw-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - openclaw
+    profiles: ["tunnel"]
+
+volumes:
+  openclaw-data:

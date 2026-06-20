@@ -1,8 +1,11 @@
-# OpenClaw en Koyeb — 3 agentes con modelos gratuitos (multi-proveedor)
+# OpenClaw 24/7 — 3 agentes con modelos gratuitos (multi-proveedor)
 
-Despliegue reproducible de [OpenClaw](https://docs.openclaw.ai) en [Koyeb](https://www.koyeb.com)
-con tres agentes especializados, **cada uno en un proveedor gratuito distinto** para tener cuotas de
-rate limit independientes.
+Despliegue reproducible de [OpenClaw](https://docs.openclaw.ai) (Docker) con tres agentes especializados,
+**cada uno en un proveedor gratuito distinto** para tener cuotas de rate limit independientes.
+
+> ⚠️ **Koyeb cerró su free tier para cuentas nuevas** (tras su adquisición por Mistral AI, feb-2026: empuja
+> al plan Pro). El despliegue **gratis** recomendado es ahora **Oracle Cloud Always Free** con
+> `docker-compose` (Opción A). La guía de Koyeb sigue abajo como Opción B (requiere plan de pago).
 
 ## Arquitectura de agentes
 
@@ -44,6 +47,7 @@ El **rol y la política de delegación** de cada agente se definen en `workspace
 ```
 openclaw-koyeb/
 ├── Dockerfile            # imagen fijada (2026.6.1) + hornea config/instrucciones/scripts
+├── docker-compose.yml    # despliegue 24/7 en una VM (Oracle/local) + túnel Cloudflare opcional
 ├── entrypoint.sh         # root: chown del volumen + siembra config → baja a "node"
 ├── node-start.sh         # node: avisa de claves + preflight + arranca gateway
 ├── preflight.mjs         # valida IDs contra Google/Groq/Cerebras (primario→error, fallback→aviso)
@@ -56,7 +60,52 @@ openclaw-koyeb/
 └── README.md
 ```
 
-## Despliegue en Koyeb
+## Opción A — Oracle Cloud Always Free (gratis, `docker-compose`)
+
+VM gratuita y *always-on* con volumen persistente. Resumen; detalle paso a paso en la respuesta del chat.
+
+1. **Crea la VM** en [cloud.oracle.com](https://cloud.oracle.com) → Compute → Instances → Create:
+   - Shape **Ampere A1 (ARM)** *Always Free* (p. ej. 1 OCPU / 6 GB). Imagen: **Ubuntu 22.04**.
+   - Guarda la **clave SSH**. (Si A1 no tiene capacidad, usa un **VM.Standard.E2.1.Micro** AMD x86, 1 GB.)
+2. **Abre el acceso:** si vas a usar Cloudflare Tunnel, **no** abras puertos. Si quieres acceso directo,
+   abre el 18789 en la *Security List* de la VCN **y** en el firewall de la VM (`ufw`/`iptables`).
+3. **Entra por SSH e instala Docker:**
+   ```sh
+   ssh ubuntu@<IP>
+   curl -fsSL https://get.docker.com | sudo sh
+   sudo usermod -aG docker $USER && newgrp docker
+   ```
+4. **Clona el repo** (privado → usa un PAT de GitHub o `gh auth login`):
+   ```sh
+   git clone https://github.com/akrogs/openclaw-koyeb.git
+   cd openclaw-koyeb
+   ```
+5. **Configura los secretos:**
+   ```sh
+   cp .env.example .env
+   nano .env        # pon GEMINI/GROQ/CEREBRAS y OPENCLAW_GATEWAY_TOKEN (openssl rand -hex 32)
+   ```
+6. **Arranca 24/7:**
+   ```sh
+   docker compose up -d --build
+   docker compose logs -f openclaw      # verifica el preflight y el arranque
+   ```
+7. **Acceso:**
+   - Rápido (sin abrir puertos): túnel SSH → `ssh -L 18789:127.0.0.1:18789 ubuntu@<IP>` y abre
+     `http://localhost:18789` en tu Mac.
+   - Permanente con HTTPS (gratis): crea un tunnel en Cloudflare, pon `CLOUDFLARE_TUNNEL_TOKEN` en `.env`,
+     enruta tu hostname → `http://openclaw:18789` y `docker compose --profile tunnel up -d`.
+8. **Aprueba el dispositivo:** abre la UI, pega el `OPENCLAW_GATEWAY_TOKEN` → Connect, y aprueba el
+   dispositivo desde el contenedor: `docker compose exec openclaw openclaw devices approve` (o el comando
+   que indique la UI).
+
+> ⚠️ **Arquitectura ARM:** `docker compose build` en A1 (ARM) requiere que la imagen base
+> `ghcr.io/openclaw/openclaw:2026.6.1` tenga variante **arm64**. Si el build falla por arquitectura, usa la
+> Micro AMD (x86) o una etiqueta arm64 si el proyecto la publica.
+
+---
+
+## Opción B — Koyeb (de pago para cuentas nuevas)
 
 1. **Sube este repo a GitHub.**
 2. **Genera el gateway token:** `openssl rand -hex 32`.
