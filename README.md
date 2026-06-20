@@ -67,6 +67,9 @@ VM *always-free* fiable (sin la lotería de capacidad de Oracle) y x86 (sin lío
 
 > ⚠️ **Para que sea $0**, respeta los límites del free tier: **1 `e2-micro`** en **us-west1 / us-central1 /
 > us-east1**, disco **Standard (pd-standard) ≤ 30 GB**, y ~1 GB de egress/mes. SSD/balanced o >30 GB se cobra.
+> El **estimador de la consola muestra el precio de lista (~$7/mes) y NO resta el Always Free** — el e2-micro
+> elegible se factura y se descuenta a $0. Lo único a vigilar: que el disco de arranque sea **Estándar**
+> (el "balanceado" por defecto sí cobra ~$1/mes). Opcional: crea una alerta de presupuesto de $1.
 
 1. **Crea la VM** en [console.cloud.google.com](https://console.cloud.google.com) → Compute Engine → VM
    instances → **Create**:
