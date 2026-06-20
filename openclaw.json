@@ -57,7 +57,7 @@
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
-        "tools": { "allow": ["read", "write", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "web_search", "web_fetch"] },
+        "tools": { "allow": ["read", "write", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "web_search", "web_fetch", "memory_get", "memory_search", "cron", "message", "create_goal", "get_goal", "update_goal"] },
         "subagents": { "allowAgents": ["tecnico", "formato"], "requireAgentId": false }
       },
       {
