@@ -43,7 +43,12 @@
   "agents": {
     "defaults": {
       "workspace": "~/.openclaw/workspaces/shared",
-      "thinkingDefault": "low"
+      "thinkingDefault": "low",
+      "memorySearch": {
+        "provider": "gemini",
+        "model": "gemini-embedding-001",
+        "outputDimensionality": 768
+      }
     },
     "list": [
       {
