@@ -76,5 +76,15 @@
   },
   "session": {
     "agentToAgent": { "maxPingPongTurns": 8 }
-  }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "allowlist",
+      "allowFrom": ["${TELEGRAM_ALLOW_FROM}"]
+    }
+  },
+  "bindings": [
+    { "agentId": "orquestador", "match": { "channel": "telegram", "accountId": "default" } }
+  ]
 }

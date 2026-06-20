@@ -210,6 +210,30 @@ GEMINI_API_KEY=... GROQ_API_KEY=... CEREBRAS_API_KEY=... node preflight.mjs open
 ```
 Sin claves, el preflight avisa y omite cada proveedor (no falla).
 
+## Hablar con el orquestador desde el móvil (Telegram)
+
+El gateway se conecta a Telegram por *long-polling* (salida), así que funciona con el firewall cerrado y
+detrás de Tailscale — no hay que abrir nada. Solo el dueño (tu ID) puede usar el bot (`dmPolicy: allowlist`).
+
+1. **Crea el bot:** en Telegram escribe a **@BotFather** → `/newbot` → sigue los pasos → copia el **token**.
+2. **Tu ID numérico:** escribe a **@userinfobot** → te responde con tu `Id` (p. ej. `123456789`).
+3. **Rellena `.env`** en la VM:
+   ```sh
+   cd ~/openclaw-koyeb
+   nano .env    # TELEGRAM_BOT_TOKEN=<token de BotFather>  ·  TELEGRAM_ALLOW_FROM=<tu id numérico>
+   ```
+4. **Aplica y arranca:**
+   ```sh
+   git pull
+   docker compose up -d --build
+   docker compose logs -f openclaw    # comprueba que el canal telegram conecta
+   ```
+5. **Escribe a tu bot** desde el iPhone → hablas con el **orquestador** (que delega en `tecnico`/`formato`).
+
+> Config: `channels.telegram` (allowlist) + `bindings` (telegram → `orquestador`) en `openclaw.json`; token e
+> ID van por `.env` (fuera del repo). Si el bot te ignora, confirma que `TELEGRAM_ALLOW_FROM` es tu ID
+> numérico exacto (míralo como `from.id` en el log).
+
 ## Caveats
 
 - **Los IDs de modelos cambian rápido — por eso existe el preflight.** Confirma en cada proveedor:
