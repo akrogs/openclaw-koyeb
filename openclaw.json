@@ -23,7 +23,11 @@
     "entries": {
       "searxng": {
         "config": { "webSearch": { "baseUrl": "http://searxng:8080" } }
-      }
+      },
+      "browser": { "enabled": false },
+      "canvas": { "enabled": false },
+      "talk-voice": { "enabled": false },
+      "phone-control": { "enabled": false }
     }
   },
   "models": {
