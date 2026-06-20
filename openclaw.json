@@ -108,7 +108,8 @@
   "mcpServers": {
     "composio": {
       "transport": "streamable-http",
-      "url": "${COMPOSIO_MCP_URL}"
+      "url": "https://connect.composio.dev/mcp",
+      "headers": { "x-consumer-api-key": "${COMPOSIO_API_KEY}" }
     }
   }
 }

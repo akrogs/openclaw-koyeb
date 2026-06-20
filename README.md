@@ -252,28 +252,29 @@ El agente accede a **Google Calendar**, **Notion** (proyectos/tareas) y **Google
 RAM/CPU en la VM y sin `exec`**. El OAuth se hace en el panel de Composio (en tu navegador), no en el gateway.
 
 **Alta (en tu navegador, NO en la VM):**
-1. Crea cuenta free en **composio.dev**.
-2. Conecta **Google** (Calendar + Drive) y **Notion**; **habilita solo esos toolkits** (no los 500+, para no
-   inflar el contexto/tokens).
-3. Copia el **MCP endpoint URL** que te genera Composio.
+1. Crea cuenta free en **composio.dev** y copia tu **API key** (`dashboard.composio.dev`, empieza por `ck_`).
+2. **Conecta** las apps **Google** (Calendar + Drive) y **Notion** (autoriza las cuentas). Habilita solo esos
+   toolkits para no inflar el contexto/tokens.
 
-**En la VM (en este orden):**
+> La **URL MCP es fija**: `https://connect.composio.dev/mcp` (ya en `openclaw.json`). La auth va por la
+> cabecera `x-consumer-api-key` con tu API key. No hay que buscar una URL per-usuario.
+
+**En la VM:**
 ```sh
 cd ~/openclaw-koyeb
-nano .env        # COMPOSIO_MCP_URL=<la URL de Composio>   (ponla ANTES del rebuild)
+nano .env        # COMPOSIO_API_KEY=ck_...
 git pull
 docker compose up -d --build
 docker compose logs openclaw | grep -i mcp      # el server 'composio' debe conectar y cargar tools
 ```
 
-> Config en `openclaw.json`: `mcpServers.composio` (`transport: streamable-http`, `url: ${COMPOSIO_MCP_URL}`).
-> El MCP es **remoto** → no añade RAM (solo algún token extra por las tools en contexto; por eso se limita a
-> 3 toolkits). Pruébalo por Telegram: *"¿qué tengo en el calendario?"*, *"crea una tarea en Notion: …"*.
+> Config en `openclaw.json`: `mcpServers.composio` (`transport: streamable-http`, url fija, header
+> `x-consumer-api-key: ${COMPOSIO_API_KEY}`). MCP **remoto** → no añade RAM (solo algún token extra por las
+> tools; por eso se limita a 3 toolkits). Pruébalo por Telegram: *"¿qué tengo en el calendario?"*.
 
-**A confirmar al montar** (formatos que varían por versión/proveedor):
-- Auth: la URL de Composio suele autoautenticar; si pide clave por cabecera, añade `headers.Authorization`
-  con `${COMPOSIO_API_KEY}` en el bloque `mcpServers` y la var en `.env`.
-- Si el orquestador **no ve** las tools del MCP, añádelas a su `tools.allow` (mira los nombres con
+**A confirmar al montar** (varían por versión):
+- Si da 401, prueba el header `X-API-Key` en vez de `x-consumer-api-key`.
+- Si el orquestador **no ve** las tools del MCP, añádelas a su `tools.allow` (nombres con
   `docker compose exec openclaw openclaw mcp tools`).
 
 ## Caveats
