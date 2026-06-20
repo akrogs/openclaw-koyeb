@@ -79,6 +79,8 @@ VM *always-free* fiable (sin la lotería de capacidad de Oracle) y x86 (sin lío
 2. **Conéctate por SSH** (botón **SSH** del navegador, o `gcloud compute ssh <vm> --zone us-central1-a`).
 3. **Crea swap (1 GB de RAM) e instala Docker:**
    ```sh
+   # En imágenes "Minimal" instala primero git/curl:
+   sudo apt-get update && sudo apt-get install -y git curl
    sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
    curl -fsSL https://get.docker.com | sudo sh
