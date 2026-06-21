@@ -37,6 +37,16 @@
           { "id": "gpt-oss-120b", "name": "GPT-OSS 120B (Cerebras)", "contextWindow": 131072, "maxTokens": 32768 },
           { "id": "zai-glm-4.7", "name": "GLM 4.7 (Cerebras)", "contextWindow": 131072, "maxTokens": 16384 }
         ]
+      },
+      "nvidia": {
+        "baseUrl": "https://integrate.api.nvidia.com/v1",
+        "apiKey": "${NVIDIA_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          { "id": "moonshotai/kimi-k2.6", "name": "Kimi K2.6 (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
+          { "id": "nvidia/llama-3.3-nemotron-super-49b-v1", "name": "Nemotron Super 49B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
+          { "id": "meta/llama-3.3-70b-instruct", "name": "Llama 3.3 70B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 }
+        ]
       }
     }
   },
@@ -45,20 +55,25 @@
       "workspace": "~/.openclaw/workspaces/shared",
       "thinkingDefault": "low",
       "memorySearch": {
-        "provider": "gemini",
-        "model": "gemini-embedding-001",
-        "outputDimensionality": 768
+        "provider": "openai-compatible",
+        "model": "nvidia/llama-nemotron-embed-vl-1b-v2:free",
+        "remote": {
+          "baseUrl": "https://openrouter.ai/api/v1/",
+          "apiKey": "${OPENROUTER_API_KEY}"
+        },
+        "queryInputType": "query",
+        "documentInputType": "passage"
       }
     },
     "list": [
       {
         "id": "orquestador",
         "default": true,
-        "name": "Orquestador (Gemini 2.5 Flash)",
+        "name": "Orquestador (NVIDIA Kimi K2.6)",
         "workspace": "~/.openclaw/workspaces/orquestador",
         "model": {
-          "primary": "google/gemini-2.5-flash",
-          "fallbacks": ["google/gemini-3.1-flash-lite", "openrouter/openrouter/free"]
+          "primary": "nvidia/moonshotai/kimi-k2.6",
+          "fallbacks": ["nvidia/nvidia/llama-3.3-nemotron-super-49b-v1", "nvidia/meta/llama-3.3-70b-instruct", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
