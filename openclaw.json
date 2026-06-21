@@ -144,10 +144,6 @@
         "transport": "streamable-http",
         "url": "${KLAVIS_STRATA_URL}",
         "headers": { "Authorization": "Bearer ${KLAVIS_API_KEY}" }
-      },
-      "python": {
-        "transport": "sse",
-        "url": "http://mcp-python:3001/sse"
       }
     }
   }
