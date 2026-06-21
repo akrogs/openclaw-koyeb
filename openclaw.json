@@ -65,14 +65,7 @@
       "workspace": "~/.openclaw/workspaces/shared",
       "thinkingDefault": "low",
       "memorySearch": {
-        "provider": "openai-compatible",
-        "model": "nvidia/llama-nemotron-embed-vl-1b-v2:free",
-        "remote": {
-          "baseUrl": "https://openrouter.ai/api/v1/",
-          "apiKey": "${OPENROUTER_API_KEY}"
-        },
-        "queryInputType": "query",
-        "documentInputType": "passage"
+        "enabled": false
       }
     },
     "list": [
@@ -87,7 +80,7 @@
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
-        "tools": { "allow": ["read", "write", "edit", "apply_patch", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "agents_list", "update_plan", "web_search", "web_fetch", "memory_get", "memory_search", "cron", "message", "create_goal", "get_goal", "update_goal", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"] },
+        "tools": { "allow": ["read", "write", "edit", "apply_patch", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "agents_list", "update_plan", "web_search", "web_fetch", "memory_get", "cron", "message", "create_goal", "get_goal", "update_goal", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"] },
         "subagents": { "allowAgents": ["tecnico", "formato"], "requireAgentId": false }
       },
       {

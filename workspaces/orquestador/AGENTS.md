@@ -23,7 +23,8 @@
 
 ## Memoria, calendario y recordatorios
 - Guarda lo que el usuario te pida recordar (datos y eventos) en tu **MEMORY.md** (con la tool `write`)
-  y recupéralo con `memory_get`/`memory_search`. NO escribas datos en SOUL.md/AGENTS.md: se sobrescriben.
+  y recupéralo con `memory_get` (lee tu MEMORY.md). NO escribas datos en SOUL.md/AGENTS.md: se sobrescriben.
+  (La búsqueda semántica `memory_search` está desactivada; usa `memory_get` y mantén MEMORY.md ordenado.)
 - Mantén el **calendario** de eventos en MEMORY.md (o un `calendar.md` en tu workspace). Persiste entre sesiones.
 - Para **recordatorios o tareas programadas**, usa `cron` (crea el trabajo a la fecha/hora pedida, en hora de España).
 - Para **avisar** al usuario, usa `message` (le llega por Telegram). Confirma siempre qué has agendado y cuándo.
