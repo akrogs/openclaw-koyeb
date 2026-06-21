@@ -83,11 +83,11 @@
       },
       {
         "id": "tecnico",
-        "name": "Tareas Tecnicas (Cerebras GPT-OSS 120B)",
+        "name": "Tareas Tecnicas (NVIDIA GLM 5.1)",
         "workspace": "~/.openclaw/workspaces/tecnico",
         "model": {
-          "primary": "cerebras/gpt-oss-120b",
-          "fallbacks": ["cerebras/zai-glm-4.7", "openrouter/openrouter/free"]
+          "primary": "nvidia/z-ai/glm-5.1",
+          "fallbacks": ["cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
         "tools": { "profile": "coding", "allow": ["read", "write", "edit", "web_search", "web_fetch"], "deny": ["browser"] },
@@ -96,11 +96,11 @@
       },
       {
         "id": "formato",
-        "name": "Formateo y Resumen (Cerebras GLM 4.7)",
+        "name": "Formateo y Resumen (Cerebras GPT-OSS 120B)",
         "workspace": "~/.openclaw/workspaces/formato",
         "model": {
-          "primary": "cerebras/zai-glm-4.7",
-          "fallbacks": ["cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
+          "primary": "cerebras/gpt-oss-120b",
+          "fallbacks": ["nvidia/z-ai/glm-5.1", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "low",
         "tools": { "allow": ["read", "write"], "deny": ["exec", "browser"] },
