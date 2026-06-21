@@ -58,7 +58,7 @@
         "workspace": "~/.openclaw/workspaces/orquestador",
         "model": {
           "primary": "google/gemini-2.5-flash",
-          "fallbacks": ["google/gemini-3.1-flash-lite"]
+          "fallbacks": ["google/gemini-3.1-flash-lite", "openrouter/meta-llama/llama-3.3-70b-instruct:free"]
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
@@ -71,7 +71,7 @@
         "workspace": "~/.openclaw/workspaces/tecnico",
         "model": {
           "primary": "cerebras/gpt-oss-120b",
-          "fallbacks": ["cerebras/zai-glm-4.7"]
+          "fallbacks": ["cerebras/zai-glm-4.7", "openrouter/meta-llama/llama-3.3-70b-instruct:free"]
         },
         "thinkingDefault": "medium",
         "tools": { "profile": "coding", "allow": ["read", "write", "edit", "web_search", "web_fetch"], "deny": ["browser"] },
@@ -84,7 +84,7 @@
         "workspace": "~/.openclaw/workspaces/formato",
         "model": {
           "primary": "cerebras/zai-glm-4.7",
-          "fallbacks": ["cerebras/gpt-oss-120b"]
+          "fallbacks": ["cerebras/gpt-oss-120b", "openrouter/meta-llama/llama-3.3-70b-instruct:free"]
         },
         "thinkingDefault": "low",
         "tools": { "allow": ["read", "write"], "deny": ["exec", "browser"] },
