@@ -94,7 +94,7 @@
           "fallbacks": ["cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
-        "tools": { "profile": "coding", "allow": ["read", "write", "edit", "web_search", "web_fetch"], "deny": ["browser"] },
+        "tools": { "profile": "coding", "allow": ["read", "write", "edit", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
         "sandbox": { "mode": "off" },
         "subagents": { "allowAgents": ["orquestador"] }
       },
@@ -107,7 +107,7 @@
           "fallbacks": ["nvidia/z-ai/glm-5.1", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "low",
-        "tools": { "allow": ["read", "write"], "deny": ["exec", "browser"] },
+        "tools": { "allow": ["read", "write", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["exec", "browser"] },
         "subagents": { "allowAgents": ["orquestador"] }
       },
       {
@@ -119,7 +119,7 @@
           "fallbacks": ["openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
-        "tools": { "allow": ["read", "write", "edit", "web_search", "web_fetch"], "deny": ["browser"] },
+        "tools": { "allow": ["read", "write", "edit", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
         "sandbox": { "mode": "off" },
         "subagents": { "allowAgents": ["orquestador"] }
       }
