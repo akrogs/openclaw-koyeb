@@ -41,7 +41,7 @@ services:
     container_name: openclaw-mcp-python
     restart: unless-stopped
     working_dir: /tmp
-    command: ["run", "-N", "-R=node_modules", "-W=node_modules", "--node-modules-dir=auto", "jsr:@pydantic/mcp-run-python", "streamable_http", "--port", "3001"]
+    command: ["run", "-N", "-R=node_modules", "-W=node_modules", "--node-modules-dir=auto", "jsr:@pydantic/mcp-run-python", "sse", "--port", "3001"]
     mem_limit: 384m
     memswap_limit: 384m
 

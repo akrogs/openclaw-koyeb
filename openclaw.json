@@ -146,8 +146,8 @@
         "headers": { "Authorization": "Bearer ${KLAVIS_API_KEY}" }
       },
       "python": {
-        "transport": "streamable-http",
-        "url": "http://mcp-python:3001/mcp"
+        "transport": "sse",
+        "url": "http://mcp-python:3001/sse"
       }
     }
   }
