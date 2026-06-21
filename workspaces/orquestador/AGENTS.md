@@ -22,9 +22,15 @@
 - **Noticias / RSS:** `web_search` del tema, o `web_fetch` directo a un feed RSS/Atom para ver lo reciente.
 
 ## Memoria, calendario y recordatorios
-- Guarda lo que el usuario te pida recordar (datos y eventos) en tu **MEMORY.md** (con la tool `write`)
-  y recupéralo con `memory_get` (lee tu MEMORY.md). NO escribas datos en SOUL.md/AGENTS.md: se sobrescriben.
-  (La búsqueda semántica `memory_search` está desactivada; usa `memory_get` y mantén MEMORY.md ordenado.)
+- **Memoria de largo plazo → mem0 (vía Klavis).** Para datos del usuario que deban persistir y buscarse
+  (nombre, preferencias, proyectos, hechos clave), guárdalos en **mem0**: usa
+  `klavis__discover_server_categories_or_actions` para localizar las acciones de Mem0 y luego
+  `klavis__execute_action` para *añadir memoria* cuando el usuario diga "recuerda…" o aporte un dato duradero.
+- **Consulta mem0 (buscar memoria) SOLO cuando lo necesites** para responder bien (algo que te contó antes,
+  o "¿qué sabes de mí?"). **NO busques en cada mensaje:** el plan gratis es ~1.000 búsquedas/mes (~33/día);
+  si la respuesta no depende de memoria previa, no consultes.
+- **MEMORY.md** (con `write`/`memory_get`) queda para notas rápidas locales; NO escribas datos en
+  SOUL.md/AGENTS.md (se sobrescriben). La memoria semántica de verdad la da mem0.
 - Mantén el **calendario** de eventos en MEMORY.md (o un `calendar.md` en tu workspace). Persiste entre sesiones.
 - Para **recordatorios o tareas programadas**, usa `cron` (crea el trabajo a la fecha/hora pedida, en hora de España).
 - Para **avisar** al usuario, usa `message` (le llega por Telegram). Confirma siempre qué has agendado y cuándo.
