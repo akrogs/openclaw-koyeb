@@ -10,41 +10,43 @@ Despliegue reproducible de [OpenClaw](https://docs.openclaw.ai) (Docker) con tre
 
 ## Arquitectura de agentes
 
-| Agente | Rol | Proveedor → Modelo (free) | Límite free |
-|---|---|---|---|
-| `orquestador` (default) | Divide el problema en subtareas, gestiona el contexto masivo y delega. | **Google** → `google/gemini-2.5-flash` | ~1.500 req/día, 1M ctx |
-| `tecnico` | Código estructurado y matemáticas avanzadas. | **Groq** → `groq/openai/gpt-oss-120b` | ~14.4k req/día |
-| `formato` | Informes finales, estructurar JSON y limpiar texto. | **Cerebras** → `cerebras/llama-3.3-70b` | 1M tok/día |
+| Agente | Rol | Proveedor → Modelo (free) |
+|---|---|---|
+| `orquestador` (default) | Divide el problema en subtareas, gestiona el contexto y delega. | **NVIDIA** → `nvidia/moonshotai/kimi-k2.6` (Kimi K2.6, fuerte en tool-calling) |
+| `tecnico` | Código estructurado y matemáticas avanzadas. | **Cerebras** → `cerebras/gpt-oss-120b` |
+| `formato` | Informes finales, estructurar JSON y limpiar texto. | **Cerebras** → `cerebras/zai-glm-4.7` |
 
-> **Por qué multi-proveedor:** los modelos `:free` de OpenRouter comparten ~50 req/día **por cuenta**.
-> Asignando un proveedor por agente, cada uno tiene su propia cuota y el mejor modelo para su rol. Cada
-> agente tiene además un *fallback* en otro proveedor gratuito.
+Cada agente encadena **fallbacks gratuitos** (otro modelo del proveedor → `openrouter/openrouter/free` como
+último recurso), para resistir 429/saturación sin coste.
 
-> 🛠️ **Config activa (temporal):** el alta de **Groq** está fallando (error de signup en su web), así que
-> `openclaw.json` usa **solo Google + Cerebras** por ahora — `tecnico` corre en `cerebras/gpt-oss-120b` y
-> `formato` en `cerebras/zai-glm-4.7` (IDs reales del catálogo de Cerebras). **Para reactivar Groq** cuando
-> funcione: añade `GROQ_API_KEY` al `.env`, vuelve a declarar el provider `groq` en `models.providers` y pon
-> `tecnico.model.primary` a `groq/openai/gpt-oss-120b` (todo está en el historial git / commit `151363f`).
+> ⚠️ **Google quedó FUERA (jun-2026):** Google AI Studio empezó a cobrar (límite de 1 € alcanzado), así que
+> el orquestador se movió de Gemini a **NVIDIA** (build.nvidia.com, gratis) y la memoria RAG pasó a
+> **OpenRouter**. `GEMINI_API_KEY` ya **no se usa**.
+
+> 🛠️ **Groq sigue sin usarse** (su signup falla), por eso `tecnico` y `formato` corren en **Cerebras**
+> (`gpt-oss-120b` / `zai-glm-4.7`, IDs reales del catálogo). **Para reactivar Groq:** añade `GROQ_API_KEY` al
+> `.env`, redeclara el provider `groq` en `models.providers` y pon `tecnico.model.primary` a
+> `groq/openai/gpt-oss-120b` (todo está en el historial git / commit `151363f`).
 
 ```
-        Web Control UI (Koyeb :18789)
+        Web Control UI / Telegram
                   │
             ┌─────▼──────┐
-            │ orquestador│  Google Gemini 2.5 Flash (thinking=high)
+            │ orquestador│  NVIDIA Kimi K2.6 (free, thinking=high)
             └──┬──────┬──┘
    sessions_spawn│      │sessions_spawn
         ┌────────▼┐   ┌─▼────────┐
         │ tecnico │   │ formato  │
-        │ Groq    │   │ Cerebras │
-        │ GPT-OSS │   │ Llama3.3 │
+        │ Cerebras│   │ Cerebras │
+        │ GPT-OSS │   │ GLM 4.7  │
         └─────────┘   └──────────┘
-  (cuotas independientes: 1 proveedor por agente)
+  fallbacks en cadena → openrouter/openrouter/free
 ```
 
 El **rol y la política de delegación** de cada agente se definen en `workspaces/<id>/SOUL.md` (persona) y
 `AGENTS.md` (reglas), que OpenClaw inyecta en el system prompt. La delegación usa `subagents.allowAgents`
-+ `sessions_spawn`. Google es proveedor **nativo** de OpenClaw; Groq y Cerebras se configuran como
-**custom providers** (OpenAI-compatible) en `models.providers` de `openclaw.json`.
++ `sessions_spawn`. OpenRouter es proveedor **nativo** de OpenClaw; **NVIDIA** y **Cerebras** se configuran
+como **custom providers** (OpenAI-compatible) en `models.providers` de `openclaw.json`.
 
 > La inferencia LLM corre en los proveedores externos, **no** en Koyeb. El contenedor solo ejecuta el
 > gateway (proceso ligero de I/O): basta una instancia pequeña (~0.5–1 GB RAM), sin GPU.
@@ -57,8 +59,8 @@ openclaw-koyeb/
 ├── docker-compose.yml    # despliegue 24/7 en una VM (Oracle/local) + túnel Cloudflare opcional
 ├── entrypoint.sh         # root: chown del volumen + siembra config → baja a "node"
 ├── node-start.sh         # node: avisa de claves + preflight + arranca gateway
-├── preflight.mjs         # valida IDs contra Google/Groq/Cerebras (primario→error, fallback→aviso)
-├── openclaw.json         # config de los 3 agentes + models.providers + web search + Telegram
+├── preflight.mjs         # valida IDs contra NVIDIA/Cerebras/OpenRouter (primario→error, fallback→aviso)
+├── openclaw.json         # config de los 3 agentes + models.providers + memoria RAG + web search + Telegram
 ├── workspaces/
 │   ├── orquestador/{SOUL.md,AGENTS.md}   # persona + política de delegación
 │   ├── tecnico/{SOUL.md,AGENTS.md}
@@ -95,7 +97,7 @@ VM *always-free* fiable (sin la lotería de capacidad de Oracle) y x86 (sin lío
 4. **Clona el repo, configura secretos y arranca:**
    ```sh
    git clone https://github.com/akrogs/openclaw-koyeb.git && cd openclaw-koyeb
-   cp .env.example .env && nano .env     # GEMINI/GROQ/CEREBRAS + OPENCLAW_GATEWAY_TOKEN (openssl rand -hex 32)
+   cp .env.example .env && nano .env     # NVIDIA + CEREBRAS + OPENROUTER + OPENCLAW_GATEWAY_TOKEN (openssl rand -hex 32)
    docker compose up -d --build
    docker compose logs -f openclaw       # verifica el preflight y el arranque
    ```
@@ -140,7 +142,7 @@ VM gratuita y *always-on* con volumen persistente. Misma idea que la Opción A (
 5. **Configura los secretos:**
    ```sh
    cp .env.example .env
-   nano .env        # pon GEMINI/GROQ/CEREBRAS y OPENCLAW_GATEWAY_TOKEN (openssl rand -hex 32)
+   nano .env        # pon NVIDIA + CEREBRAS + OPENROUTER y OPENCLAW_GATEWAY_TOKEN (openssl rand -hex 32)
    ```
 6. **Arranca 24/7:**
    ```sh
@@ -166,16 +168,16 @@ VM gratuita y *always-on* con volumen persistente. Misma idea que la Opción A (
 
 1. **Sube este repo a GitHub.**
 2. **Genera el gateway token:** `openssl rand -hex 32`.
-3. **Crea 3 API keys gratuitas:**
-   - Google AI Studio → https://aistudio.google.com
-   - Groq → https://console.groq.com
-   - Cerebras → https://cloud.cerebras.ai
+3. **Crea las API keys gratuitas:**
+   - NVIDIA build → https://build.nvidia.com (orquestador; la key empieza por `nvapi-`)
+   - Cerebras → https://cloud.cerebras.ai (tecnico + formato)
+   - OpenRouter → https://openrouter.ai/keys (fallback de chat + embeddings de memoria)
 4. En Koyeb: **Create Service → Deploy from GitHub**, selecciona el repo. Build = **Dockerfile**.
 5. **Instancia:** la más pequeña disponible (eco/nano, ~512 MB). **Min = 1 instancia, sin scale-to-zero**
    (el volumen ata a una sola instancia y scale-to-zero tiraría la sesión del gateway).
 6. **Puerto:** expón **`18789`** como puerto público. Health checks HTTP: `/healthz` y `/readyz`.
 7. **Secrets (variables de entorno):**
-   - `GEMINI_API_KEY`, `GROQ_API_KEY`, `CEREBRAS_API_KEY`
+   - `NVIDIA_API_KEY`, `CEREBRAS_API_KEY`, `OPENROUTER_API_KEY`
    - `OPENCLAW_GATEWAY_TOKEN`
    - *(opcional)* `SKIP_MODEL_PREFLIGHT=1`
 8. **Volumen persistente:** crea un **Koyeb Volume** montado en **`/home/node/.openclaw`**. El
@@ -187,26 +189,26 @@ VM gratuita y *always-on* con volumen persistente. Misma idea que la Opción A (
     - Introduce el `OPENCLAW_GATEWAY_TOKEN` y pulsa **Connect**.
     - En Koyeb → pestaña **Console** del servicio → ejecuta el comando que aprueba el dispositivo pendiente.
 
-> Auth de proveedores: **no requiere `auth set` manual**. `GEMINI_API_KEY` lo consume el proveedor nativo
-> `google`; `GROQ_API_KEY`/`CEREBRAS_API_KEY` se referencian con `${...}` en `models.providers`.
+> Auth de proveedores: **no requiere `auth set` manual**. `OPENROUTER_API_KEY` lo consume el proveedor nativo
+> `openrouter`; `NVIDIA_API_KEY`/`CEREBRAS_API_KEY` se referencian con `${...}` en `models.providers`.
 
 ## Verificación
 
 - `curl https://<service>.koyeb.app/healthz` y `/readyz` → 200.
-- En los logs de arranque: `[preflight] google/groq/cerebras: N modelo(s) comprobado(s)` y `OK`.
+- En los logs de arranque: `[preflight] nvidia/cerebras/openrouter: N modelo(s) comprobado(s)` y `OK`.
 - La Web UI carga, el token conecta y el dispositivo queda aprobado.
 - En la Console: `openclaw agents list` (o equivalente) muestra `orquestador`, `tecnico`, `formato`.
 - **Prueba de orquestación** (chat con `orquestador`):
   > "Calcula la serie de Fibonacci hasta n=20 en Python y entrégame un informe final en JSON con el código y los resultados."
 
-  Esperado: el `orquestador` delega la generación de código a `tecnico` (Groq) y la redacción del JSON
-  final a `formato` (Cerebras), visible en las trazas de subagentes.
+  Esperado: el `orquestador` (Kimi K2.6) delega la generación de código a `tecnico` (Cerebras) y la redacción
+  del JSON final a `formato` (Cerebras), visible en las trazas de subagentes.
 
 ## Verificar los modelos sin desplegar
 
 El preflight se puede ejecutar en local con las claves exportadas (requiere Node 18+):
 ```sh
-GEMINI_API_KEY=... GROQ_API_KEY=... CEREBRAS_API_KEY=... node preflight.mjs openclaw.json
+NVIDIA_API_KEY=... CEREBRAS_API_KEY=... OPENROUTER_API_KEY=... node preflight.mjs openclaw.json
 ```
 Sin claves, el preflight avisa y omite cada proveedor (no falla).
 
@@ -244,6 +246,26 @@ sin contenedor extra**. Config: `tools.web.search.provider: "duckduckgo"`.
   la **e2-micro de 1 GB** (saturaba la RAM). Si subes a una VM con ≥2 GB, se puede volver a SearXNG
   (provider `searxng` + servicio en el compose).
 - DuckDuckGo es un proveedor *experimental* (scrapea DDG): puede fallar ocasionalmente por páginas anti-bot.
+
+## Memoria con RAG (embeddings por OpenRouter)
+
+El orquestador recuerda entre sesiones: guarda notas en su `MEMORY.md` y las recupera por búsqueda semántica
+(`memory_get`/`memory_search`). Los **embeddings** se generan en **OpenRouter** con el modelo
+**`nvidia/llama-nemotron-embed-vl-1b-v2:free`** (gratis), configurado en `agents.defaults.memorySearch`
+(`provider: openai-compatible`, `remote.baseUrl: https://openrouter.ai/api/v1/`, `apiKey: ${OPENROUTER_API_KEY}`).
+Antes usaba Gemini; se movió a OpenRouter al dejar Google de ser gratis. Por eso `OPENROUTER_API_KEY` es
+**obligatoria** (doble uso: fallback de chat + embeddings de memoria).
+
+> ⚠️ **Si cambias el modelo o la dimensión de embeddings, BORRA los índices de memoria.** OpenClaw **no** los
+> regenera solo: los `~/.openclaw/memory/<agente>.sqlite` guardan vectores de la dimensión vieja y, al no
+> coincidir con la nueva, **el turno del agente revienta en silencio** (no responde y no deja log a nivel
+> INFO — costó horas de depurar). Solución:
+> ```sh
+> docker compose stop openclaw
+> docker compose run --rm --no-deps --entrypoint sh openclaw -c \
+>   'cd /home/node/.openclaw/memory && for f in *.sqlite*; do mv "$f" "$f.bak"; done'
+> docker compose up -d openclaw   # reconstruye los índices con la nueva dimensión desde MEMORY.md
+> ```
 
 ## Servicios externos: Calendario + Notion + Drive (vía Klavis Strata, UN solo MCP)
 
@@ -284,17 +306,21 @@ docker compose logs openclaw | grep -i -E "mcp|klavis"   # el server 'klavis' de
 ## Caveats
 
 - **Los IDs de modelos cambian rápido — por eso existe el preflight.** Confirma en cada proveedor:
-  - **Groq deprecó `llama-3.3-70b-versatile` y `llama-3.1-8b-instant` el 17-jun-2026** → usamos
-    `openai/gpt-oss-120b` / `qwen/qwen3-32b` en Groq, y Llama 3.3 70B desde **Cerebras** (estable allí).
-  - **Cerebras `qwen-3-coder-480b` es "evaluation"** (puede retirarse) → va como *fallback*; si desaparece
-    el preflight **solo avisa** (no bloquea el arranque). Si falta un modelo **primario**, sí aborta.
-  - **Gemini Pro NO es generoso en free** (~50 req/día) → el orquestador usa **Flash**, no Pro.
+  - **NVIDIA:** el orquestador usa `nvidia/moonshotai/kimi-k2.6` (Kimi K2.6). Los IDs de NVIDIA llevan barra
+    interna (`vendor/modelo`) → la referencia queda con **doble barra** (`nvidia/moonshotai/kimi-k2.6`); el
+    preflight la parte por la primera barra y la valida contra el catálogo de NVIDIA.
+  - **Fallbacks que se retiren** (p.ej. modelos "evaluation" de Cerebras/NVIDIA): el preflight **solo avisa**,
+    no bloquea. Si falta un modelo **primario**, sí aborta el arranque.
 - **Rate limits independientes pero finitos:** mantén fallbacks, `maxPingPongTurns` y la regla "una
   llamada por subagente" del `AGENTS.md` del orquestador.
 - **Custom providers = config de dos pasos:** definir el proveedor **y** listar el modelo en
   `models.providers[].models`, o saldrá "model not allowed".
-- **Privacidad:** el free tier de Google AI Studio puede usar datos para mejorar el producto; evita datos
-  sensibles o usa un tier que no entrene con tus datos.
+- **Google quedó fuera:** AI Studio empezó a cobrar (límite de 1 €) → el orquestador usa **NVIDIA** y la
+  memoria RAG usa **OpenRouter**. `GEMINI_API_KEY` ya no hace falta.
+- **NVIDIA build (gratis):** límites por cuenta/escalado; si un modelo da 429/503 está saturado o escalando
+  (reintenta) — la cadena de fallbacks lo cubre.
+- **OpenRouter `:free`:** tope diario (~50/día sin saldo, ~1000/día con $10 de crédito) que aplica **tanto**
+  al fallback de chat **como** a los embeddings de memoria.
 - **Ejecución de código:** `tecnico` está en `sandbox: off` (Koyeb no expone socket Docker). Sirve para
   *escribir* código; ejecutarlo de forma segura requeriría otra solución de sandbox.
 - **Imagen oficial:** confirma el CMD/entrypoint real de `ghcr.io/openclaw/openclaw:2026.6.1` y el formato
@@ -307,4 +333,4 @@ docker compose logs openclaw | grep -i -E "mcp|klavis"   # el server 'klavis' de
 - [OpenClaw — Agent runtime](https://docs.openclaw.ai/concepts/agent) · [System prompt](https://docs.openclaw.ai/concepts/system-prompt)
 - [OpenClaw — Docker install](https://docs.openclaw.ai/install/docker)
 - [Deploy OpenClaw One-Click App — Koyeb](https://www.koyeb.com/deploy/openclaw)
-- [Google AI Studio](https://ai.google.dev) · [Groq Docs](https://console.groq.com/docs) · [Cerebras Inference Docs](https://inference-docs.cerebras.ai)
+- [NVIDIA build (NIM)](https://build.nvidia.com) · [Cerebras Inference Docs](https://inference-docs.cerebras.ai) · [OpenRouter](https://openrouter.ai/docs)
