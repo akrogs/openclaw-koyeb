@@ -43,7 +43,7 @@
         "apiKey": "${NVIDIA_API_KEY}",
         "api": "openai-completions",
         "models": [
-          { "id": "moonshotai/kimi-k2.6", "name": "Kimi K2.6 (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
+          { "id": "moonshotai/kimi-k2.6", "name": "Kimi K2.6 (NVIDIA, free)", "input": ["text", "image"], "contextWindow": 131072, "maxTokens": 16384 },
           { "id": "nvidia/llama-3.3-nemotron-super-49b-v1", "name": "Nemotron Super 49B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
           { "id": "meta/llama-3.3-70b-instruct", "name": "Llama 3.3 70B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 }
         ]
