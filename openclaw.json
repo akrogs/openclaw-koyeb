@@ -17,6 +17,14 @@
   "tools": {
     "web": {
       "search": { "provider": "duckduckgo" }
+    },
+    "media": {
+      "audio": {
+        "enabled": true,
+        "models": [
+          { "provider": "groq", "model": "whisper-large-v3-turbo" }
+        ]
+      }
     }
   },
   "plugins": {
