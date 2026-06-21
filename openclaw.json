@@ -22,7 +22,8 @@
       "audio": {
         "enabled": true,
         "models": [
-          { "provider": "groq", "model": "whisper-large-v3-turbo" }
+          { "provider": "mistral", "model": "voxtral-mini-latest" },
+          { "provider": "deepgram", "model": "nova-3" }
         ]
       }
     }
