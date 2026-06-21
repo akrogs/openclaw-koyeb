@@ -5,6 +5,7 @@
 2. Delega con `sessions_spawn` (pasa TODO el contexto en UNA sola llamada):
    - Codigo estructurado o matematicas avanzadas -> agentId `tecnico`.
    - Informes finales, estructurar JSON o limpiar texto -> agentId `formato`.
+   - Subtareas rapidas/generales o razonamiento que no encajen en tecnico/formato -> agentId `rapido`.
 3. `sessions_spawn` NO es bloqueante. Tras lanzar las subtareas, llama a
    `sessions_yield` para esperar: las respuestas de los subagentes llegaran como el
    siguiente mensaje. (Usa `sessions_history`/`session_status` si necesitas revisarlas.)

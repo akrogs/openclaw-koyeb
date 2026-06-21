@@ -55,7 +55,8 @@
           { "id": "minimaxai/minimax-m3", "name": "MiniMax M3 (NVIDIA, free)", "input": ["text", "image"], "contextWindow": 1000000, "maxTokens": 16384 },
           { "id": "moonshotai/kimi-k2.6", "name": "Kimi K2.6 (NVIDIA, free)", "input": ["text", "image"], "contextWindow": 131072, "maxTokens": 16384 },
           { "id": "z-ai/glm-5.1", "name": "GLM 5.1 (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
-          { "id": "nvidia/nemotron-3-ultra-550b-a55b", "name": "Nemotron 3 Ultra 550B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 }
+          { "id": "nvidia/nemotron-3-ultra-550b-a55b", "name": "Nemotron 3 Ultra 550B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
+          { "id": "deepseek-ai/deepseek-v4-flash", "name": "DeepSeek V4 Flash (NVIDIA, free)", "contextWindow": 1000000, "maxTokens": 16384 }
         ]
       }
     }
@@ -82,7 +83,7 @@
         "contextLimits": { "memoryGetMaxChars": 24000 },
         "skills": ["weather", "diagram-maker"],
         "tools": { "allow": ["read", "write", "edit", "apply_patch", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "agents_list", "update_plan", "web_search", "web_fetch", "memory_get", "cron", "message", "create_goal", "get_goal", "update_goal", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"] },
-        "subagents": { "allowAgents": ["tecnico", "formato"], "requireAgentId": false }
+        "subagents": { "allowAgents": ["tecnico", "formato", "rapido"], "requireAgentId": false }
       },
       {
         "id": "tecnico",
@@ -107,6 +108,19 @@
         },
         "thinkingDefault": "low",
         "tools": { "allow": ["read", "write"], "deny": ["exec", "browser"] },
+        "subagents": { "allowAgents": ["orquestador"] }
+      },
+      {
+        "id": "rapido",
+        "name": "Rapido (DeepSeek V4 Flash)",
+        "workspace": "~/.openclaw/workspaces/rapido",
+        "model": {
+          "primary": "nvidia/deepseek-ai/deepseek-v4-flash",
+          "fallbacks": ["openrouter/openrouter/free"]
+        },
+        "thinkingDefault": "medium",
+        "tools": { "allow": ["read", "write", "edit", "web_search", "web_fetch"], "deny": ["browser"] },
+        "sandbox": { "mode": "off" },
         "subagents": { "allowAgents": ["orquestador"] }
       }
     ]
