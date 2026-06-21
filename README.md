@@ -236,11 +236,11 @@ detrás de Tailscale — no hay que abrir nada. Solo el dueño (tu ID) puede usa
 > ID van por `.env` (fuera del repo). Si el bot te ignora, confirma que `TELEGRAM_ALLOW_FROM` es tu ID
 > numérico exacto (míralo como `from.id` en el log).
 
-## Búsqueda web (Parallel Search, gratis sin clave)
+## Búsqueda web (DuckDuckGo, gratis sin clave)
 
-El orquestador busca en internet con `web_search`/`web_fetch` usando **Parallel Search (free)** — **gratis,
-sin clave, sin contenedor extra**. Config: `tools.web.search.provider: "parallel-free"`. (Antes DuckDuckGo,
-que scrapea DDG y fallaba con páginas anti-bot.)
+El orquestador busca en internet con `web_search`/`web_fetch` usando **DuckDuckGo** — **gratis, sin clave,
+sin contenedor extra**. Config: `tools.web.search.provider: "duckduckgo"`. Es *experimental* (scrapea DDG):
+puede fallar ocasionalmente con páginas anti-bot.
 
 - **Mejor calidad (opcional): Tavily**, pensado para agentes (resultados limpios, ~1.000 búsq/mes gratis, sin
   tarjeta). Para usarlo: `tools.web.search.provider: "tavily"` y `TAVILY_API_KEY` en el `.env`.

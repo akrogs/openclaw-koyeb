@@ -16,7 +16,7 @@
   },
   "tools": {
     "web": {
-      "search": { "provider": "parallel-free" }
+      "search": { "provider": "duckduckgo" }
     },
     "media": {
       "audio": {
