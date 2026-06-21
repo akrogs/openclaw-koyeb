@@ -32,19 +32,6 @@ services:
       retries: 5
       start_period: 90s
 
-  # Sandbox de ejecucion de codigo (Pyodide/WASM) via mcp-run-python (Pydantic), expuesto por MCP.
-  # AISLADO: el codigo Python corre en WASM, sin ver la red ni el filesystem del host.
-  # LIMITE DE MEMORIA duro (cgroup mem_limit): si una ejecucion se desboca, el OOM mata SOLO este
-  # contenedor (se reinicia), nunca el gateway. El gateway lo alcanza por la red interna en mcp-python:3001.
-  mcp-python:
-    image: denoland/deno:latest
-    container_name: openclaw-mcp-python
-    restart: unless-stopped
-    working_dir: /tmp
-    command: ["run", "-N", "-R=node_modules", "-W=node_modules", "--node-modules-dir=auto", "jsr:@pydantic/mcp-run-python", "sse", "--port", "3001"]
-    mem_limit: 384m
-    memswap_limit: 384m
-
   # Opcional — tunel de Cloudflare para acceso remoto con HTTPS (gratis, sin abrir puertos).
   #   1) Crea un tunnel en https://one.dash.cloudflare.com (Networks > Tunnels), copia su token.
   #   2) Ponlo en .env como CLOUDFLARE_TUNNEL_TOKEN=...
