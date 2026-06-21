@@ -236,16 +236,16 @@ detrás de Tailscale — no hay que abrir nada. Solo el dueño (tu ID) puede usa
 > ID van por `.env` (fuera del repo). Si el bot te ignora, confirma que `TELEGRAM_ALLOW_FROM` es tu ID
 > numérico exacto (míralo como `from.id` en el log).
 
-## Búsqueda web (DuckDuckGo, gratis)
+## Búsqueda web (Parallel Search, gratis sin clave)
 
-El orquestador busca en internet con `web_search`/`web_fetch` usando **DuckDuckGo** — **gratis, sin clave,
-sin contenedor extra**. Config: `tools.web.search.provider: "duckduckgo"`.
+El orquestador busca en internet con `web_search`/`web_fetch` usando **Parallel Search (free)** — **gratis,
+sin clave, sin contenedor extra**. Config: `tools.web.search.provider: "parallel-free"`. (Antes DuckDuckGo,
+que scrapea DDG y fallaba con páginas anti-bot.)
 
-- No se usan Brave (ya no es gratis) ni el *grounding* de Gemini (puede facturar).
-- **Por qué DuckDuckGo y no SearXNG:** SearXNG self-hosted es más robusto, pero no cabe junto a OpenClaw en
-  la **e2-micro de 1 GB** (saturaba la RAM). Si subes a una VM con ≥2 GB, se puede volver a SearXNG
-  (provider `searxng` + servicio en el compose).
-- DuckDuckGo es un proveedor *experimental* (scrapea DDG): puede fallar ocasionalmente por páginas anti-bot.
+- **Mejor calidad (opcional): Tavily**, pensado para agentes (resultados limpios, ~1.000 búsq/mes gratis, sin
+  tarjeta). Para usarlo: `tools.web.search.provider: "tavily"` y `TAVILY_API_KEY` en el `.env`.
+- No se usa **SearXNG** self-hosted: no cabe junto a OpenClaw en la **e2-micro de 1 GB** (satura la RAM). Con
+  una VM ≥2 GB se podría (provider `searxng` + servicio en el compose).
 
 ## Memoria con RAG (embeddings por OpenRouter)
 
