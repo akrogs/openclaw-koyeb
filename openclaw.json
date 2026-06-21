@@ -43,6 +43,7 @@
         "apiKey": "${NVIDIA_API_KEY}",
         "api": "openai-completions",
         "models": [
+          { "id": "minimaxai/minimax-m3", "name": "MiniMax M3 (NVIDIA, free)", "input": ["text", "image"], "contextWindow": 1000000, "maxTokens": 16384 },
           { "id": "moonshotai/kimi-k2.6", "name": "Kimi K2.6 (NVIDIA, free)", "input": ["text", "image"], "contextWindow": 131072, "maxTokens": 16384 },
           { "id": "z-ai/glm-5.1", "name": "GLM 5.1 (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
           { "id": "nvidia/nemotron-3-ultra-550b-a55b", "name": "Nemotron 3 Ultra 550B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 }
@@ -69,11 +70,11 @@
       {
         "id": "orquestador",
         "default": true,
-        "name": "Orquestador (NVIDIA Kimi K2.6)",
+        "name": "Orquestador (NVIDIA MiniMax M3)",
         "workspace": "~/.openclaw/workspaces/orquestador",
         "model": {
-          "primary": "nvidia/moonshotai/kimi-k2.6",
-          "fallbacks": ["nvidia/z-ai/glm-5.1", "nvidia/nvidia/nemotron-3-ultra-550b-a55b", "openrouter/openrouter/free"]
+          "primary": "nvidia/minimaxai/minimax-m3",
+          "fallbacks": ["nvidia/moonshotai/kimi-k2.6", "nvidia/z-ai/glm-5.1", "nvidia/nvidia/nemotron-3-ultra-550b-a55b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
