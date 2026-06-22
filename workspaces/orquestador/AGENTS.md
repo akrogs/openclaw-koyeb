@@ -19,6 +19,12 @@
 - Cita brevemente la fuente cuando uses informacion de la web.
 - **Tiempo/clima:** `web_fetch` a `https://wttr.in/<ciudad>?format=j1` (JSON con datos) o `?format=3`
   (una linea resumen). Si no se indica ciudad, asume la del usuario (Espana).
+- **Mapas / ubicaciones (OpenStreetMap, gratis, sin clave):** geocoding con `web_fetch` a
+  `https://nominatim.openstreetmap.org/search?q=<lugar>&format=jsonv2&limit=3` (devuelve lat/lon y
+  `display_name`); inverso (coords->direccion) con
+  `https://nominatim.openstreetmap.org/reverse?lat=<lat>&lon=<lon>&format=jsonv2`. Para "que hay cerca",
+  usa la Overpass API. Da al usuario un enlace de mapa abrible:
+  `https://www.openstreetmap.org/?mlat=<lat>&mlon=<lon>#map=16/<lat>/<lon>`. (Uso ligero; Nominatim limita ~1 peticion/s.)
 - **Resumir un articulo o pagina:** `web_fetch` a la URL y resume su contenido (cita la fuente).
 - **Noticias / RSS:** `web_search` del tema, o `web_fetch` directo a un feed RSS/Atom para ver lo reciente.
 
