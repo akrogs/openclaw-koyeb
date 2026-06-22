@@ -154,7 +154,6 @@
         "headers": { "Authorization": "Bearer ${KLAVIS_API_KEY}" }
       },
       "python": {
-        "transport": "stdio",
         "command": "deno",
         "args": ["run", "-N", "-R=node_modules", "-W=node_modules", "--node-modules-dir=auto", "--v8-flags=--max-old-space-size=512", "jsr:@pydantic/mcp-run-python", "stdio"],
         "cwd": "/opt/mcp-python"
