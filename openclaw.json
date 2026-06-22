@@ -75,6 +75,9 @@
       "thinkingDefault": "low",
       "memorySearch": {
         "enabled": false
+      },
+      "models": {
+        "openrouter/z-ai/glm-5.2": {}
       }
     },
     "list": [
