@@ -45,6 +45,12 @@ const PROVIDERS = {
     headers: (key) => ({ Authorization: `Bearer ${key}` }),
     ids: (json) => (json.data || []).map((m) => m.id),
   },
+  zenmux: {
+    keyEnv: "ZENMUX_API_KEY",
+    url: () => "https://zenmux.ai/api/v1/models",
+    headers: (key) => ({ Authorization: `Bearer ${key}` }),
+    ids: (json) => (json.data || []).map((m) => m.id),
+  },
 };
 
 // Devuelve los modelos unicos con su(s) rol(es) y agente(s): { full, roles:Set, agents:Set }.
