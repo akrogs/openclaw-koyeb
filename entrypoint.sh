@@ -36,6 +36,25 @@ if [ "$(id -u)" = "0" ]; then
   seed_config
   chown -R "$APP_USER":"$APP_USER" "$CONFIG_DIR" 2>/dev/null || true
 
+  # DooD: si el socket de Docker esta montado (para el sandbox de la tool 'exec'), dar acceso
+  # al usuario "node" anadiendolo al grupo del socket. El GID del socket varia por host, asi
+  # que lo detectamos en runtime y creamos el grupo si hace falta (arregla el clasico
+  # "docker.sock permission denied"). Si falla, solo el sandbox de exec se vera afectado.
+  if [ -S /var/run/docker.sock ]; then
+    DGID="$(stat -c '%g' /var/run/docker.sock 2>/dev/null || true)"
+    if [ -n "$DGID" ]; then
+      GRP="$(getent group "$DGID" | cut -d: -f1)"
+      if [ -z "$GRP" ]; then
+        groupadd -g "$DGID" dockerhost 2>/dev/null && GRP=dockerhost
+      fi
+      if [ -n "$GRP" ] && usermod -aG "$GRP" "$APP_USER" 2>/dev/null; then
+        echo "[entrypoint] '$APP_USER' con acceso al docker.sock (grupo '$GRP', gid $DGID)."
+      else
+        echo "[entrypoint] aviso: no pude dar acceso al docker.sock a '$APP_USER'; el sandbox de exec podria fallar." >&2
+      fi
+    fi
+  fi
+
   # Bajar a "node" para arrancar el gateway (cadena de fallback segun lo disponible).
   if command -v gosu >/dev/null 2>&1; then
     exec gosu "$APP_USER" "$TPL/node-start.sh"
