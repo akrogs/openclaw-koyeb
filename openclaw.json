@@ -91,11 +91,11 @@
       {
         "id": "orquestador",
         "default": true,
-        "name": "Orquestador (NVIDIA Kimi K2.6)",
+        "name": "Orquestador (Z.ai GLM 5.2)",
         "workspace": "~/.openclaw/workspaces/orquestador",
         "model": {
-          "primary": "nvidia/moonshotai/kimi-k2.6",
-          "fallbacks": ["zenmux/z-ai/glm-5.2-free", "nvidia/minimaxai/minimax-m3", "nvidia/z-ai/glm-5.1", "nvidia/nvidia/nemotron-3-ultra-550b-a55b", "openrouter/openrouter/free"]
+          "primary": "zai/glm-5.2",
+          "fallbacks": ["nvidia/moonshotai/kimi-k2.6", "zenmux/z-ai/glm-5.2-free", "nvidia/minimaxai/minimax-m3", "nvidia/z-ai/glm-5.1", "nvidia/nvidia/nemotron-3-ultra-550b-a55b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
@@ -105,11 +105,11 @@
       },
       {
         "id": "tecnico",
-        "name": "Tareas Tecnicas (NVIDIA GLM 5.1)",
+        "name": "Tareas Tecnicas (Z.ai GLM 5.2)",
         "workspace": "~/.openclaw/workspaces/tecnico",
         "model": {
-          "primary": "nvidia/z-ai/glm-5.1",
-          "fallbacks": ["zenmux/z-ai/glm-5.2-free", "cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
+          "primary": "zai/glm-5.2",
+          "fallbacks": ["nvidia/z-ai/glm-5.1", "zenmux/z-ai/glm-5.2-free", "cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
         "tools": { "profile": "coding", "allow": ["read", "write", "edit", "exec", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
