@@ -66,6 +66,9 @@
         "models": [
           { "id": "z-ai/glm-5.2-free", "name": "GLM 5.2 (ZenMux, free)", "contextWindow": 131072, "maxTokens": 16384 }
         ]
+      },
+      "zai": {
+        "baseUrl": "https://api.z.ai/api/coding/paas/v4"
       }
     }
   },
@@ -77,7 +80,11 @@
         "enabled": false
       },
       "models": {
-        "openrouter/z-ai/glm-5.2": {}
+        "openrouter/z-ai/glm-5.2": {},
+        "zai/glm-5.2": {},
+        "zai/glm-4.7": {},
+        "zai/glm-5-turbo": {},
+        "zai/glm-4.5-air": {}
       }
     },
     "list": [
