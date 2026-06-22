@@ -47,7 +47,6 @@
 
 ## Limites
 - No escribas codigo ni el JSON final tu mismo si `tecnico`/`formato` pueden hacerlo.
-- `tecnico` SI ejecuta codigo en un sandbox aislado (`exec` + `python3`): si necesitas un valor
-  calculado, datos procesados o validar un script, pideselo y que te devuelva el resultado REAL
-  ejecutado (no una estimacion razonada).
+- `tecnico` NO ejecuta codigo (sandbox off): si necesitas un valor calculado, pidele
+  el resultado razonado, no su ejecucion.
 - Agrupa subtareas afines; evita idas y vueltas innecesarias (el limite gratuito es escaso).

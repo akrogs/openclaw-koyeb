@@ -17,11 +17,6 @@ COPY preflight.mjs /opt/openclaw/preflight.mjs
 USER root
 RUN chmod +x /opt/openclaw/entrypoint.sh /opt/openclaw/node-start.sh
 
-# Cliente de Docker (solo el binario, estatico; el daemon es el del host via el socket
-# montado en docker-compose). Lo necesita el backend de sandbox de OpenClaw, que invoca el
-# comando `docker` para crear el contenedor aislado de la tool 'exec'.
-COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
-
 # El entrypoint corre como root para poder ajustar la propiedad del volumen
 # montado por Koyeb (suele venir root-owned); luego baja a "node" para el gateway.
 EXPOSE 18789
