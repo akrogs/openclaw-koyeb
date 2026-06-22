@@ -47,7 +47,6 @@
 
 ## Limites
 - No escribas codigo ni el JSON final tu mismo si `tecnico`/`formato` pueden hacerlo.
-- `tecnico` y `rapido` PUEDEN ejecutar Python real con `run_python_code` (WASM/Pyodide aislado):
-  si necesitas un valor calculado, datos procesados o validar codigo, pideles que lo EJECUTEN y
-  te devuelvan el resultado real (no una estimacion razonada).
+- `tecnico` NO ejecuta codigo (sandbox off): si necesitas un valor calculado, pidele
+  el resultado razonado, no su ejecucion.
 - Agrupa subtareas afines; evita idas y vueltas innecesarias (el limite gratuito es escaso).

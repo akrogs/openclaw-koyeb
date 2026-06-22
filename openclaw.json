@@ -102,7 +102,7 @@
           "fallbacks": ["zenmux/z-ai/glm-5.2-free", "cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
-        "tools": { "profile": "coding", "allow": ["read", "write", "edit", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation", "python__*", "python__run_python_code"], "deny": ["browser"] },
+        "tools": { "profile": "coding", "allow": ["read", "write", "edit", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
         "sandbox": { "mode": "off" },
         "subagents": { "allowAgents": ["orquestador"] }
       },
@@ -127,7 +127,7 @@
           "fallbacks": ["zenmux/z-ai/glm-5.2-free", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
-        "tools": { "allow": ["read", "write", "edit", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation", "python__*", "python__run_python_code"], "deny": ["browser"] },
+        "tools": { "allow": ["read", "write", "edit", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
         "sandbox": { "mode": "off" },
         "subagents": { "allowAgents": ["orquestador"] }
       }
@@ -152,11 +152,6 @@
         "transport": "streamable-http",
         "url": "${KLAVIS_STRATA_URL}",
         "headers": { "Authorization": "Bearer ${KLAVIS_API_KEY}" }
-      },
-      "python": {
-        "command": "deno",
-        "args": ["run", "-N", "-R=node_modules", "-W=node_modules", "--node-modules-dir=auto", "--v8-flags=--max-old-space-size=512", "jsr:@pydantic/mcp-run-python", "stdio"],
-        "cwd": "/opt/mcp-python"
       }
     }
   }
