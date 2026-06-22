@@ -79,6 +79,10 @@
       "memorySearch": {
         "enabled": false
       },
+      "imageModel": {
+        "primary": "nvidia/moonshotai/kimi-k2.6",
+        "fallbacks": ["nvidia/minimaxai/minimax-m3"]
+      },
       "models": {
         "openrouter/z-ai/glm-5.2": {},
         "zai/glm-5.2": {},
