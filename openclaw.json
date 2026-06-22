@@ -90,7 +90,7 @@
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
         "skills": ["weather", "diagram-maker"],
-        "tools": { "allow": ["read", "write", "edit", "apply_patch", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "agents_list", "update_plan", "web_search", "web_fetch", "memory_get", "cron", "message", "create_goal", "get_goal", "update_goal", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"] },
+        "tools": { "allow": ["exec", "read", "write", "edit", "apply_patch", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "agents_list", "update_plan", "web_search", "web_fetch", "memory_get", "cron", "message", "create_goal", "get_goal", "update_goal", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"] },
         "subagents": { "allowAgents": ["tecnico", "formato", "rapido"], "requireAgentId": false }
       },
       {
@@ -102,8 +102,8 @@
           "fallbacks": ["zenmux/z-ai/glm-5.2-free", "cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
-        "tools": { "profile": "coding", "allow": ["read", "write", "edit", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
-        "sandbox": { "mode": "off" },
+        "tools": { "profile": "coding", "allow": ["read", "write", "edit", "exec", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
+        "sandbox": { "mode": "all", "scope": "agent", "backend": "docker", "workspaceAccess": "none", "docker": { "image": "openclaw-sandbox:bookworm-slim", "network": "none" } },
         "subagents": { "allowAgents": ["orquestador"] }
       },
       {

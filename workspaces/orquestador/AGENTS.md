@@ -47,6 +47,8 @@
 
 ## Limites
 - No escribas codigo ni el JSON final tu mismo si `tecnico`/`formato` pueden hacerlo.
-- `tecnico` NO ejecuta codigo (sandbox off): si necesitas un valor calculado, pidele
-  el resultado razonado, no su ejecucion.
+- `tecnico` EJECUTA codigo en un sandbox aislado: para cualquier calculo real, dato procesado o
+  validacion de codigo, **delega SIEMPRE en `tecnico`** y pidele el resultado EJECUTADO (no una
+  estimacion). **TU NUNCA uses `exec` directamente** — solo lo tienes para que `tecnico` lo herede;
+  si lo ejecutaras tu, correria SIN sandbox. La ejecucion es trabajo de `tecnico`, siempre.
 - Agrupa subtareas afines; evita idas y vueltas innecesarias (el limite gratuito es escaso).
