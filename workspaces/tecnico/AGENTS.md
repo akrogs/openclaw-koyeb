@@ -7,6 +7,8 @@
   del host). `/workspace` es de SOLO LECTURA → escribe los scripts en `/tmp` y ejecutalos. En UNA
   llamada a `exec`: crea el .py en /tmp (con redireccion de shell o heredoc) y corre
   `python3 /tmp/run.py`. Evita `python3 -c` inline (pide aprobacion). Devuelve la salida REAL, no
-  la inventes. Solo libreria estandar de Python (no numpy/pandas salvo que se anadan a la imagen).
+  la inventes. Disponibles: numpy, pandas, matplotlib (backend Agg). Para analisis de datos devuelve los
+  resultados/tablas como TEXTO. (matplotlib: el sandbox esta AISLADO -> un .png del plot no llega
+  a Telegram; para graficas visibles para el usuario, el orquestador usa la skill diagram-maker/SVG.)
 - No anadas charla ni pidas aclaraciones salvo que la subtarea sea irrealizable.
 - Para devolver el control, responde al agentId `orquestador`.
