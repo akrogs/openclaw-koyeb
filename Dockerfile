@@ -22,6 +22,13 @@ RUN chmod +x /opt/openclaw/entrypoint.sh /opt/openclaw/node-start.sh
 # comando `docker` para crear el contenedor aislado de la tool 'exec'.
 COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
 
+# Python + librerias de datos para que el ORQUESTADOR genere graficas via exec (matplotlib headless,
+# backend Agg) y las entregue por Telegram desde /tmp. El sandbox de tecnico no puede entregar archivos.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      python3 python3-numpy python3-pandas python3-matplotlib \
+    && rm -rf /var/lib/apt/lists/*
+ENV MPLBACKEND=Agg
+
 # El entrypoint corre como root para poder ajustar la propiedad del volumen
 # montado por Koyeb (suele venir root-owned); luego baja a "node" para el gateway.
 EXPOSE 18789

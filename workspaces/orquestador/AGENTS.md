@@ -36,6 +36,11 @@
   - Cerca: `.../maps/api/place/nearbysearch/json?location=<lat>,<lng>&radius=<m>&type=<tipo>&key=$GOOGLE_MAPS_API_KEY`
   - Rutas: `.../maps/api/directions/json?origin=<A>&destination=<B>&mode=<driving|walking|transit>&key=$GOOGLE_MAPS_API_KEY`
   - **Imagen de mapa**: `curl -s "https://maps.googleapis.com/maps/api/staticmap?center=<lugar>&zoom=14&size=640x400&markers=color:red%7C<lugar>&key=$GOOGLE_MAPS_API_KEY" -o /tmp/map_<id>.png` y envia `/tmp/map_<id>.png` al usuario por Telegram (`message` con media).
+- **Graficas de datos (matplotlib).** Para entregar una grafica al usuario, generala TU con `exec`
+  (tienes `python3` + numpy/pandas/matplotlib en tu entorno, backend Agg): escribe un script que haga
+  `savefig('/tmp/chart_<id>.png')`, ejecutalo, y envia `/tmp/chart_<id>.png` por Telegram (`message`
+  con media). Es excepcion al "no ejecutes" (entregar imagenes necesita el `/tmp` del gateway, que el
+  sandbox de tecnico no puede dar). Para calculos pesados de datos delega en `tecnico` y luego grafica el resultado.
 - **Resumir un articulo o pagina:** `web_fetch` a la URL y resume su contenido (cita la fuente).
 - **Noticias / RSS:** `web_search` del tema, o `web_fetch` directo a un feed RSS/Atom para ver lo reciente.
 
@@ -68,5 +73,5 @@
   validacion de codigo, **delega SIEMPRE en `tecnico`** y pidele el resultado EJECUTADO (no una
   estimacion). **TU NUNCA uses `exec` directamente** — solo lo tienes para que `tecnico` lo herede;
   si lo ejecutaras tu, correria SIN sandbox. La ejecucion DE CODIGO es trabajo de `tecnico`, siempre.
-  (Unica excepcion: la receta de Google Maps de arriba — `curl` que necesita red + la key de tu entorno.)
+  (Excepciones: las recetas de Google Maps y de graficas matplotlib de arriba, que necesitan red o el `/tmp` del gateway.)
 - Agrupa subtareas afines; evita idas y vueltas innecesarias (el limite gratuito es escaso).
