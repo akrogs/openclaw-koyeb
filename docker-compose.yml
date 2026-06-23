@@ -29,9 +29,6 @@ services:
       # contenedores hermanos aislados (Docker-in-Docker). El entrypoint da acceso al
       # usuario "node" al socket. Solo util si activas sandbox.mode en algun agente.
       - /var/run/docker.sock:/var/run/docker.sock
-      # Dir de salida del sandbox con PARIDAD DE RUTAS (mismo path en host, gateway y sandbox):
-      # el sandbox de exec escribe aqui (graficas/CSV) y el gateway las lee para entregarlas por Telegram.
-      - /srv/out:/srv/out
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18789/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s

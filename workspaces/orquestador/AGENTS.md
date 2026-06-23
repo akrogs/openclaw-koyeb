@@ -25,6 +25,17 @@
   `https://nominatim.openstreetmap.org/reverse?lat=<lat>&lon=<lon>&format=jsonv2`. Para "que hay cerca",
   usa la Overpass API. Da al usuario un enlace de mapa abrible:
   `https://www.openstreetmap.org/?mlat=<lat>&mlon=<lon>#map=16/<lat>/<lon>`. (Uso ligero; Nominatim limita ~1 peticion/s.)
+- **Google Maps API (mejor calidad; de pago con credito gratis).** Para datos ricos (sitios con
+  rating/resenas, rutas, imagen de mapa) usa `exec` para `curl` a la API con la key de tu entorno
+  `$GOOGLE_MAPS_API_KEY` (NUNCA la escribas en texto; ya esta en tu env). ESTO lo haces TU con `exec`
+  (es la excepcion: Maps necesita red + la key, que el sandbox de tecnico no tiene). Parsea el JSON,
+  resume y cita Google:
+  - Geocoding: `curl -s "https://maps.googleapis.com/maps/api/geocode/json?address=<lugar>&key=$GOOGLE_MAPS_API_KEY"`
+  - Sitios: `.../maps/api/place/textsearch/json?query=<consulta>&key=$GOOGLE_MAPS_API_KEY`
+  - Detalles+resenas: `.../maps/api/place/details/json?place_id=<id>&fields=name,rating,formatted_address,opening_hours,reviews&key=$GOOGLE_MAPS_API_KEY`
+  - Cerca: `.../maps/api/place/nearbysearch/json?location=<lat>,<lng>&radius=<m>&type=<tipo>&key=$GOOGLE_MAPS_API_KEY`
+  - Rutas: `.../maps/api/directions/json?origin=<A>&destination=<B>&mode=<driving|walking|transit>&key=$GOOGLE_MAPS_API_KEY`
+  - **Imagen de mapa**: `curl -s "https://maps.googleapis.com/maps/api/staticmap?center=<lugar>&zoom=14&size=640x400&markers=color:red%7C<lugar>&key=$GOOGLE_MAPS_API_KEY" -o /tmp/map_<id>.png` y envia `/tmp/map_<id>.png` al usuario por Telegram (`message` con media).
 - **Resumir un articulo o pagina:** `web_fetch` a la URL y resume su contenido (cita la fuente).
 - **Noticias / RSS:** `web_search` del tema, o `web_fetch` directo a un feed RSS/Atom para ver lo reciente.
 
@@ -56,8 +67,6 @@
 - `tecnico` EJECUTA codigo en un sandbox aislado: para cualquier calculo real, dato procesado o
   validacion de codigo, **delega SIEMPRE en `tecnico`** y pidele el resultado EJECUTADO (no una
   estimacion). **TU NUNCA uses `exec` directamente** — solo lo tienes para que `tecnico` lo herede;
-  si lo ejecutaras tu, correria SIN sandbox. La ejecucion es trabajo de `tecnico`, siempre.
-- **Entregar archivos generados:** si `tecnico` produce un archivo en `/srv/out/` (p.ej. una grafica
-  `.png` o un CSV), **envíaselo al usuario por Telegram** con la tool `message` adjuntando ese archivo
-  como media (la ruta `/srv/out/<archivo>` es accesible para ti). Confirma brevemente qué le mandas.
+  si lo ejecutaras tu, correria SIN sandbox. La ejecucion DE CODIGO es trabajo de `tecnico`, siempre.
+  (Unica excepcion: la receta de Google Maps de arriba — `curl` que necesita red + la key de tu entorno.)
 - Agrupa subtareas afines; evita idas y vueltas innecesarias (el limite gratuito es escaso).
