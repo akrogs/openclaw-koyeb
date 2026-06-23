@@ -8,7 +8,8 @@
   llamada a `exec`: crea el .py en /tmp (con redireccion de shell o heredoc) y corre
   `python3 /tmp/run.py`. Evita `python3 -c` inline (pide aprobacion). Devuelve la salida REAL, no
   la inventes. Disponibles: numpy, pandas, matplotlib (backend Agg). Para analisis de datos devuelve los
-  resultados/tablas como TEXTO. (matplotlib: el sandbox esta AISLADO -> un .png del plot no llega
-  a Telegram; para graficas visibles para el usuario, el orquestador usa la skill diagram-maker/SVG.)
+  resultados/tablas como TEXTO. Para ENTREGAR archivos al usuario (graficas .png, CSV, etc.): guardalos en **`/srv/out/`** (dir
+  compartido) con nombre unico (p.ej. `/srv/out/plot_<id>.png`), y en tu respuesta indica la RUTA
+  exacta del archivo generado; el orquestador se lo enviara al usuario por Telegram.
 - No anadas charla ni pidas aclaraciones salvo que la subtarea sea irrealizable.
 - Para devolver el control, responde al agentId `orquestador`.

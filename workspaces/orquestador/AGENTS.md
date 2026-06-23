@@ -57,4 +57,7 @@
   validacion de codigo, **delega SIEMPRE en `tecnico`** y pidele el resultado EJECUTADO (no una
   estimacion). **TU NUNCA uses `exec` directamente** — solo lo tienes para que `tecnico` lo herede;
   si lo ejecutaras tu, correria SIN sandbox. La ejecucion es trabajo de `tecnico`, siempre.
+- **Entregar archivos generados:** si `tecnico` produce un archivo en `/srv/out/` (p.ej. una grafica
+  `.png` o un CSV), **envíaselo al usuario por Telegram** con la tool `message` adjuntando ese archivo
+  como media (la ruta `/srv/out/<archivo>` es accesible para ti). Confirma brevemente qué le mandas.
 - Agrupa subtareas afines; evita idas y vueltas innecesarias (el limite gratuito es escaso).

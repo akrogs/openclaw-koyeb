@@ -36,6 +36,10 @@ if [ "$(id -u)" = "0" ]; then
   seed_config
   chown -R "$APP_USER":"$APP_USER" "$CONFIG_DIR" 2>/dev/null || true
 
+  # Dir de salida compartido del sandbox (paridad de rutas): el sandbox de exec escribe aqui
+  # (p.ej. graficas) y el gateway lo lee para entregarlo. Scratch -> permisos abiertos.
+  mkdir -p /srv/out && chmod 777 /srv/out 2>/dev/null || true
+
   # DooD: si el socket de Docker esta montado (para el sandbox de la tool 'exec'), dar acceso
   # al usuario "node" anadiendolo al grupo del socket. El GID del socket varia por host, asi
   # que lo detectamos en runtime y creamos el grupo si hace falta (arregla el clasico
