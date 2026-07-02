@@ -51,6 +51,13 @@ const PROVIDERS = {
     headers: (key) => ({ Authorization: `Bearer ${key}` }),
     ids: (json) => (json.data || []).map((m) => m.id),
   },
+  zai: {
+    keyEnv: "ZAI_API_KEY",
+    url: () => "https://api.z.ai/api/coding/paas/v4/models",
+    headers: (key) => ({ Authorization: `Bearer ${key}` }),
+    ids: (json) => (json.data || []).map((m) => m.id),
+    warnOnly: true, // catalogo del Coding Plan sin confirmar -> nunca bloquea el arranque, solo avisa
+  },
 };
 
 // Devuelve los modelos unicos con su(s) rol(es) y agente(s): { full, roles:Set, agents:Set }.
@@ -126,7 +133,7 @@ try {
     for (const entry of models) {
       if (available.has(entry.modelId)) {
         verified++;
-      } else if (entry.roles.has("primary")) {
+      } else if (entry.roles.has("primary") && !p.warnOnly) {
         missingPrimary.push(entry);
       } else {
         missingFallback.push(entry);

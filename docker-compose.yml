@@ -1,4 +1,4 @@
-# OpenClaw 24/7 en una VM (Oracle Cloud Always Free u otra).
+# OpenClaw 24/7 en una VM (cualquier VPS >=2GB; probado en Tencent Lighthouse Frankfurt).
 # Construye la imagen desde el Dockerfile del repo (hornea openclaw.json, los workspaces
 # y los scripts), con volumen persistente y reinicio automatico.
 #
@@ -15,6 +15,15 @@ services:
     image: openclaw-koyeb:local
     container_name: openclaw
     restart: unless-stopped
+    # Tope de memoria: un runaway (p.ej. via exec) no puede tumbar la VM de 2GB. Con swap no hace
+    # OOM duro en picos normales (matplotlib/turnos). Sube a 1400m si ves OOM-kills en el uso real.
+    mem_limit: 1200m
+    # Rotacion de logs para que /var/lib/docker no crezca sin limite.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     env_file: .env
     environment:
       - TZ=Europe/Madrid        # el agente da la hora/fecha en hora local de España
