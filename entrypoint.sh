@@ -28,6 +28,12 @@ seed_config() {
   mkdir -p "$CONFIG_DIR/workspaces"
   cp "$TPL/openclaw.json" "$CONFIG_DIR/openclaw.json"
   seed_workspaces
+  # Semilla del package.json de trading (deps como tweetnacl) -> node-start.sh hace npm install.
+  # Sobrevive a resets del workspace; NO pisa node_modules ni binarios que solo viven en el volumen.
+  if [ -f "$TPL/workspaces/orquestador/trading/package.json" ]; then
+    mkdir -p "$CONFIG_DIR/workspaces/orquestador/trading"
+    cp "$TPL/workspaces/orquestador/trading/package.json" "$CONFIG_DIR/workspaces/orquestador/trading/package.json"
+  fi
 }
 
 if [ "$(id -u)" = "0" ]; then
@@ -53,6 +59,26 @@ if [ "$(id -u)" = "0" ]; then
         echo "[entrypoint] aviso: no pude dar acceso al docker.sock a '$APP_USER'; el sandbox de exec podria fallar." >&2
       fi
     fi
+  fi
+
+  # Auto-start del clay-sandbox (market data OKX en 127.0.0.1:9000) si el binario existe en el
+  # workspace. El proceso muere al reiniciar el contenedor, por eso se re-lanza en cada arranque.
+  # Corre como "$APP_USER" desde su directorio (lee .env.clay). Solo se re-lanza si el binario esta.
+  CLAY_DIR="$CONFIG_DIR/workspaces/orquestador/skills/claw-wallet"
+  if [ -x "$CLAY_DIR/clay-sandbox" ]; then
+    CLAY_ADDR="127.0.0.1:9000"
+    if [ -f "$CLAY_DIR/.env.clay" ]; then
+      _a="$(grep -E '^LISTEN_ADDR=' "$CLAY_DIR/.env.clay" | head -1 | cut -d= -f2- | tr -d '\r')"
+      [ -n "$_a" ] && CLAY_ADDR="$_a"
+    fi
+    if command -v gosu >/dev/null 2>&1; then
+      gosu "$APP_USER" sh -c "cd '$CLAY_DIR' && nohup ./clay-sandbox > sandbox.log 2>&1 &"
+    else
+      ( cd "$CLAY_DIR" && nohup ./clay-sandbox > sandbox.log 2>&1 & )
+    fi
+    echo "[entrypoint] clay-sandbox started on $CLAY_ADDR"
+  else
+    echo "[entrypoint] clay-sandbox not found, skipping"
   fi
 
   # Bajar a "node" para arrancar el gateway (cadena de fallback segun lo disponible).

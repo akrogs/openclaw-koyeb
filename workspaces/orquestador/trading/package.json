@@ -1,0 +1,8 @@
+{
+  "name": "trading",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "tweetnacl": "^1.0.3"
+  }
+}
