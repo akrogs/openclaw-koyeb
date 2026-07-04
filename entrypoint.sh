@@ -28,9 +28,11 @@ seed_config() {
   mkdir -p "$CONFIG_DIR/workspaces"
   cp "$TPL/openclaw.json" "$CONFIG_DIR/openclaw.json"
   seed_workspaces
-  # Semilla del package.json de trading (deps como tweetnacl) -> node-start.sh hace npm install.
-  # Sobrevive a resets del workspace; NO pisa node_modules ni binarios que solo viven en el volumen.
-  if [ -f "$TPL/workspaces/orquestador/trading/package.json" ]; then
+  # Semilla del package.json de trading (deps como tweetnacl): SOLO si no existe ya en el volumen.
+  # El del volumen MANDA (patron "seed-if-missing", igual que SOUL.md/AGENTS.md); el del repo solo
+  # cubre un volumen nuevo/reseteado. node-start.sh hace el npm install si falta tweetnacl.
+  if [ -f "$TPL/workspaces/orquestador/trading/package.json" ] \
+     && [ ! -f "$CONFIG_DIR/workspaces/orquestador/trading/package.json" ]; then
     mkdir -p "$CONFIG_DIR/workspaces/orquestador/trading"
     cp "$TPL/workspaces/orquestador/trading/package.json" "$CONFIG_DIR/workspaces/orquestador/trading/package.json"
   fi
