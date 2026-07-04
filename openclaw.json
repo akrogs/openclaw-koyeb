@@ -61,6 +61,7 @@
           { "id": "minimaxai/minimax-m3", "name": "MiniMax M3 (NVIDIA, free)", "input": ["text", "image"], "contextWindow": 1000000, "maxTokens": 16384 },
           { "id": "moonshotai/kimi-k2.6", "name": "Kimi K2.6 (NVIDIA, free)", "input": ["text", "image"], "contextWindow": 131072, "maxTokens": 16384 },
           { "id": "z-ai/glm-5.1", "name": "GLM 5.1 (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
+          { "id": "z-ai/glm-5.2", "name": "GLM 5.2 (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
           { "id": "nvidia/nemotron-3-ultra-550b-a55b", "name": "Nemotron 3 Ultra 550B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
           { "id": "deepseek-ai/deepseek-v4-flash", "name": "DeepSeek V4 Flash (NVIDIA, free)", "contextWindow": 1000000, "maxTokens": 16384 }
         ]
@@ -107,7 +108,7 @@
         "workspace": "~/.openclaw/workspaces/orquestador",
         "model": {
           "primary": "zai/glm-5.2",
-          "fallbacks": ["nvidia/moonshotai/kimi-k2.6", "zenmux/z-ai/glm-5.2-free", "nvidia/minimaxai/minimax-m3", "nvidia/z-ai/glm-5.1", "nvidia/nvidia/nemotron-3-ultra-550b-a55b", "openrouter/openrouter/free"]
+          "fallbacks": ["nvidia/moonshotai/kimi-k2.6", "zenmux/z-ai/glm-5.2-free", "nvidia/z-ai/glm-5.2", "nvidia/minimaxai/minimax-m3", "nvidia/z-ai/glm-5.1", "nvidia/nvidia/nemotron-3-ultra-550b-a55b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
@@ -121,7 +122,7 @@
         "workspace": "~/.openclaw/workspaces/tecnico",
         "model": {
           "primary": "zai/glm-5.2",
-          "fallbacks": ["nvidia/z-ai/glm-5.1", "zenmux/z-ai/glm-5.2-free", "cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
+          "fallbacks": ["nvidia/z-ai/glm-5.1", "zenmux/z-ai/glm-5.2-free", "nvidia/z-ai/glm-5.2", "cerebras/gpt-oss-120b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
         "tools": { "profile": "coding", "allow": ["read", "write", "edit", "exec", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
@@ -134,7 +135,7 @@
         "workspace": "~/.openclaw/workspaces/formato",
         "model": {
           "primary": "cerebras/gpt-oss-120b",
-          "fallbacks": ["zenmux/z-ai/glm-5.2-free", "nvidia/z-ai/glm-5.1", "openrouter/openrouter/free"]
+          "fallbacks": ["zenmux/z-ai/glm-5.2-free", "nvidia/z-ai/glm-5.2", "nvidia/z-ai/glm-5.1", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "low",
         "tools": { "allow": ["read", "write", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["exec", "browser"] },
@@ -146,7 +147,7 @@
         "workspace": "~/.openclaw/workspaces/rapido",
         "model": {
           "primary": "nvidia/deepseek-ai/deepseek-v4-flash",
-          "fallbacks": ["zenmux/z-ai/glm-5.2-free", "openrouter/openrouter/free"]
+          "fallbacks": ["zenmux/z-ai/glm-5.2-free", "nvidia/z-ai/glm-5.2", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "medium",
         "tools": { "allow": ["read", "write", "edit", "web_search", "web_fetch", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"], "deny": ["browser"] },
