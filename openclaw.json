@@ -94,6 +94,7 @@
         "openrouter/z-ai/glm-5.2": {},
         "openrouter/deepseek/deepseek-v4-pro": {},
         "openrouter/deepseek/deepseek-v4-flash": {},
+        "nvidia/z-ai/glm-5.2": {},
         "zai/glm-5.2": {},
         "zai/glm-4.7": {},
         "zai/glm-5-turbo": {},
