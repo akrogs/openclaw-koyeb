@@ -76,6 +76,14 @@
       },
       "zai": {
         "baseUrl": "https://api.z.ai/api/coding/paas/v4"
+      },
+      "lmstudio": {
+        "baseUrl": "http://100.124.146.45:1234/v1",
+        "apiKey": "lm-studio",
+        "api": "openai-completions",
+        "models": [
+          { "id": "qwen/qwen3.6-35b-a3b", "name": "Qwen 3.6 35B (Local)", "contextWindow": 46000, "maxTokens": 8192 }
+        ]
       }
     }
   },
@@ -95,6 +103,7 @@
         "openrouter/deepseek/deepseek-v4-pro": {},
         "openrouter/deepseek/deepseek-v4-flash": {},
         "nvidia/z-ai/glm-5.2": {},
+        "lmstudio/qwen/qwen3.6-35b-a3b": {},
         "zai/glm-5.2": {},
         "zai/glm-4.7": {},
         "zai/glm-5-turbo": {},
