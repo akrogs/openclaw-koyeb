@@ -19,8 +19,7 @@
   },
   "tools": {
     "exec": {
-      "host": "node",
-      "node": "PC-Gorka"
+      "host": "auto"
     },
     "web": {
       "search": { "provider": "duckduckgo" }
