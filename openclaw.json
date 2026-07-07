@@ -12,9 +12,16 @@
         "https://vm-0-7-ubuntu.tail507211.ts.net",
         "https://vm-0-7-ubuntu.tail507211.ts.net:18789"
       ]
+    },
+    "nodes": {
+      "allowCommands": ["system.run", "system.which", "system.run.prepare"]
     }
   },
   "tools": {
+    "exec": {
+      "host": "node",
+      "node": "PC-Gorka"
+    },
     "web": {
       "search": { "provider": "duckduckgo" }
     },
