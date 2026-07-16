@@ -10,7 +10,6 @@ CONFIG="$HOME/.openclaw/openclaw.json"
 # clave que SI se usa hoy (Gemini/Groq quedaron fuera).
 [ -n "$ZAI_API_KEY" ]        || echo "[node-start] aviso: ZAI_API_KEY no definido; 'zai' (PRIMARIO de orquestador/tecnico) no autenticara." >&2
 [ -n "$NVIDIA_API_KEY" ]     || echo "[node-start] aviso: NVIDIA_API_KEY no definido; 'nvidia' (Kimi/vision + fallbacks) no autenticara." >&2
-[ -n "$ZENMUX_API_KEY" ]     || echo "[node-start] aviso: ZENMUX_API_KEY no definido; 'zenmux' (fallback GLM 5.2 free) no autenticara." >&2
 [ -n "$CEREBRAS_API_KEY" ]   || echo "[node-start] aviso: CEREBRAS_API_KEY no definido; 'cerebras' (formato) no autenticara." >&2
 [ -n "$OPENROUTER_API_KEY" ] || echo "[node-start] aviso: OPENROUTER_API_KEY no definido; ultimo fallback de chat no autenticara." >&2
 
