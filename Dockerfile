@@ -2,7 +2,7 @@
 # Evita ":latest": hay builds publicadas inestables (p.ej. 2026.3.2, 2026.2.26).
 # Verifica/actualiza la etiqueta en:
 #   https://github.com/openclaw/openclaw/pkgs/container/openclaw
-FROM ghcr.io/openclaw/openclaw:2026.6.1
+FROM ghcr.io/openclaw/openclaw:2026.7.1
 
 # Plantillas (se siembran en el volumen en el arranque via entrypoint):
 #  - openclaw.json : config declarativa de los 3 agentes
