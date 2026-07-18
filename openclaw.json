@@ -185,7 +185,7 @@
       },
       "browserclaw": {
         "transport": "streamable-http",
-        "url": "http://100.124.146.45:9010/mcp"
+        "url": "http://100.124.146.45:9021/mcp"
       }
     }
   }
