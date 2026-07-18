@@ -120,7 +120,7 @@
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
         "skills": ["weather", "diagram-maker", "multi-search-engine", "summarize"],
-        "tools": { "allow": ["exec", "read", "write", "edit", "apply_patch", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "agents_list", "update_plan", "web_search", "web_fetch", "memory_get", "cron", "message", "create_goal", "get_goal", "update_goal", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"] },
+        "tools": { "allow": ["exec", "read", "write", "edit", "apply_patch", "sessions_spawn", "sessions_yield", "sessions_history", "sessions_list", "session_status", "subagents", "agents_list", "update_plan", "web_search", "web_fetch", "memory_get", "cron", "message", "create_goal", "get_goal", "update_goal", "browserclaw__*", "klavis__*", "klavis__discover_server_categories_or_actions", "klavis__execute_action", "klavis__get_action_details", "klavis__get_category_actions", "klavis__handle_auth_failure", "klavis__search_documentation"] },
         "subagents": { "allowAgents": ["tecnico", "formato", "rapido"], "requireAgentId": false }
       },
       {
@@ -182,6 +182,10 @@
         "transport": "streamable-http",
         "url": "${KLAVIS_STRATA_URL}",
         "headers": { "Authorization": "Bearer ${KLAVIS_API_KEY}" }
+      },
+      "browserclaw": {
+        "transport": "streamable-http",
+        "url": "http://100.124.146.45:9010/mcp"
       }
     }
   }
