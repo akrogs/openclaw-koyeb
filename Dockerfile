@@ -24,8 +24,11 @@ COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
 
 # Python + librerias de datos para que el ORQUESTADOR genere graficas via exec (matplotlib headless,
 # backend Agg) y las entregue por Telegram desde /tmp. El sandbox de tecnico no puede entregar archivos.
+# openssh-client: el agente hace ssh via exec hacia PC-Gorka (24/7 en el tailnet) para ejecutar cosas
+# alli. La CLAVE PRIVADA no se hornea aqui: vive en el volumen (~/.openclaw/ssh/), nunca en el repo/imagen.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       python3 python3-numpy python3-pandas python3-matplotlib \
+      openssh-client \
     && rm -rf /var/lib/apt/lists/*
 ENV MPLBACKEND=Agg
 
