@@ -9,9 +9,10 @@ CONFIG="$HOME/.openclaw/openclaw.json"
 # el proveedor built-in en zai/openrouter). No hace falta 'openclaw auth set'. Avisa si falta alguna
 # clave que SI se usa hoy (Gemini/Groq quedaron fuera).
 [ -n "$ZAI_API_KEY" ]        || echo "[node-start] aviso: ZAI_API_KEY no definido; 'zai' (PRIMARIO de orquestador/tecnico) no autenticara." >&2
-[ -n "$NVIDIA_API_KEY" ]     || echo "[node-start] aviso: NVIDIA_API_KEY no definido; 'nvidia' (Kimi/vision + fallbacks) no autenticara." >&2
+[ -n "$NVIDIA_API_KEY" ]     || echo "[node-start] aviso: NVIDIA_API_KEY no definido; 'nvidia' (fallbacks de chat + vision Nemotron Omni) no autenticara." >&2
 [ -n "$CEREBRAS_API_KEY" ]   || echo "[node-start] aviso: CEREBRAS_API_KEY no definido; 'cerebras' (formato) no autenticara." >&2
-[ -n "$OPENROUTER_API_KEY" ] || echo "[node-start] aviso: OPENROUTER_API_KEY no definido; ultimo fallback de chat no autenticara." >&2
+[ -n "$OPENROUTER_API_KEY" ] || echo "[node-start] aviso: OPENROUTER_API_KEY no definido; fallbacks de chat + vision (Nemotron VL/Gemma) no autenticaran." >&2
+[ -n "$TAVILY_API_KEY" ]     || echo "[node-start] aviso: TAVILY_API_KEY no definido; web_search (proveedor 'tavily') NO funcionara." >&2
 
 # Dependencias del workspace de trading (tweetnacl, etc.): npm install SOLO si faltan, en background
 # para no frenar el arranque del gateway. El package.json lo siembra el entrypoint desde el repo.

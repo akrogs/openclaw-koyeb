@@ -22,7 +22,7 @@
       "host": "auto"
     },
     "web": {
-      "search": { "provider": "duckduckgo" }
+      "search": { "provider": "tavily" }
     },
     "media": {
       "audio": {
