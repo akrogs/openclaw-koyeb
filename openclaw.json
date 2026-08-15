@@ -66,7 +66,8 @@
         "models": [
           { "id": "minimaxai/minimax-m3", "name": "MiniMax M3 (NVIDIA, free)", "input": ["text", "image"], "contextWindow": 1000000, "maxTokens": 16384 },
           { "id": "z-ai/glm-5.2", "name": "GLM 5.2 (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
-          { "id": "nvidia/nemotron-3-ultra-550b-a55b", "name": "Nemotron 3 Ultra 550B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 }
+          { "id": "nvidia/nemotron-3-ultra-550b-a55b", "name": "Nemotron 3 Ultra 550B (NVIDIA, free)", "contextWindow": 131072, "maxTokens": 16384 },
+          { "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "name": "Nemotron 3 Nano Omni 30B (NVIDIA, free, vision)", "input": ["text", "image"], "contextWindow": 256000, "maxTokens": 16384 }
         ]
       },
       "zai": {
@@ -91,7 +92,7 @@
       },
       "imageModel": {
         "primary": "openrouter/nvidia/nemotron-nano-12b-v2-vl:free",
-        "fallbacks": ["openrouter/google/gemma-4-31b-it:free"]
+        "fallbacks": ["openrouter/google/gemma-4-31b-it:free", "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"]
       },
       "models": {
         "openrouter/z-ai/glm-5.2": {},
