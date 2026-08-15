@@ -92,7 +92,7 @@
       },
       "imageModel": {
         "primary": "nvidia/moonshotai/kimi-k2.6",
-        "fallbacks": ["nvidia/minimaxai/minimax-m3"]
+        "fallbacks": ["nvidia/minimaxai/minimax-m3", "openrouter/google/gemma-4-31b-it:free"]
       },
       "models": {
         "openrouter/z-ai/glm-5.2": {},
