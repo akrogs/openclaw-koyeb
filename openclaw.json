@@ -90,8 +90,8 @@
         "enabled": false
       },
       "imageModel": {
-        "primary": "nvidia/minimaxai/minimax-m3",
-        "fallbacks": ["openrouter/nvidia/nemotron-nano-12b-v2-vl:free", "openrouter/google/gemma-4-31b-it:free"]
+        "primary": "openrouter/nvidia/nemotron-nano-12b-v2-vl:free",
+        "fallbacks": ["openrouter/google/gemma-4-31b-it:free", "nvidia/minimaxai/minimax-m3"]
       },
       "models": {
         "openrouter/z-ai/glm-5.2": {},
