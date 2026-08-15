@@ -100,6 +100,7 @@
         "openrouter/deepseek/deepseek-v4-flash": {},
         "nvidia/z-ai/glm-5.2": {},
         "lmstudio/qwen/qwen3.6-35b-a3b": {},
+        "zai/glm-5.3": {},
         "zai/glm-5.2": {},
         "zai/glm-4.7": {},
         "zai/glm-5-turbo": {},
