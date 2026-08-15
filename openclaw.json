@@ -114,8 +114,8 @@
         "name": "Orquestador (Z.ai GLM 5.2)",
         "workspace": "~/.openclaw/workspaces/orquestador",
         "model": {
-          "primary": "zai/glm-5.2",
-          "fallbacks": ["nvidia/moonshotai/kimi-k2.6", "nvidia/z-ai/glm-5.2", "nvidia/minimaxai/minimax-m3", "nvidia/nvidia/nemotron-3-ultra-550b-a55b", "openrouter/openrouter/free"]
+          "primary": "zai/glm-5.3",
+          "fallbacks": ["zai/glm-5.2", "nvidia/moonshotai/kimi-k2.6", "nvidia/z-ai/glm-5.2", "nvidia/minimaxai/minimax-m3", "nvidia/nvidia/nemotron-3-ultra-550b-a55b", "openrouter/openrouter/free"]
         },
         "thinkingDefault": "high",
         "contextLimits": { "memoryGetMaxChars": 24000 },
